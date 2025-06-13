@@ -1,0 +1,98 @@
+# Arquivo .gitignore para Projeto C++ com Google Test
+
+# --- Saídas de Compilação Específicas do Projeto ---
+# Diretórios de saída definidos no Makefile
+bin/
+objects/
+
+# Executável de teste e seus artefatos (gerados em tests/)
+# Embora *.o, *.d, *.exe, *.out globais possam cobrir,
+# é bom ser explícito para artefatos de teste.
+tests/*.o
+tests/*.d
+tests/test
+tests/test.exe
+tests/test.out # Caso EXT seja vazio e 'test' seja considerado um 'out'
+
+# --- Artefatos de Compilação Genéricos ---
+# Arquivos objeto
+*.o
+*.lo
+
+# Bibliotecas estáticas e dinâmicas
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+
+# Outros binários e executáveis genéricos
+*.exe
+# *.out # Comentado pois tests/test.out já cobre o caso de teste específico
+*.app
+
+# Diretórios de compilação comuns (além dos específicos do projeto)
+build/
+dist/
+
+# --- Arquivos Gerados pelo Compilador ---
+# Cabeçalhos pré-compilados
+*.gch
+# Arquivos de dependências (gerados pelo GCC com -MMD ou -MD)
+*.d
+
+# --- Logs e Arquivos Temporários ---
+*.log
+*.tmp
+*~
+*.bak
+*.swo # Vim swap file (alternativa a *.swp)
+
+# --- Cobertura de Testes ---
+coverage/
+*.gcno
+*.gcda
+*.gcov
+
+# --- IDEs e Editores ---
+# Visual Studio Code
+.vscode/
+# Visual Studio
+*.suo
+*.user
+*.sln.docstates
+*.vs/
+# CLion
+.idea/
+# Qt Creator
+*.pro.user*
+# Eclipse
+.cproject
+.project
+.settings/
+# NetBeans
+nbproject/
+
+# --- Sistema Operacional ---
+.DS_Store          # macOS
+Thumbs.db          # Windows
+._* # macOS resource forks
+
+# --- Core Dumps ---
+core
+*.core
+
+# --- Indexadores e Tags de Código ---
+tags
+TAGS
+cscope.*
+compile_commands.json # Gerado por CMake/Bear para algumas IDEs
+
+# --- Outras Ferramentas/Arquivos Específicos de C++ ---
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
