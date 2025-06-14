@@ -50,7 +50,7 @@ public:
      *
      * Cria um iterador inválido (geralmente usado para representar o fim de uma coleção).
      */
-    IteratorRB() {}
+    IteratorRB() = default;
 
     /**
      * @brief Construtor que inicializa o iterador a partir da raiz da árvore.

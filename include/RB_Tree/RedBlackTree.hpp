@@ -175,36 +175,6 @@ private:
     NodeRB<Key, Value> *clear(NodePtr root);
 
     /**
-     * @brief Atualiza a altura de um nó.
-     *
-     * A altura de um nó é calculada como 1 + máximo(altura do filho esquerdo, altura do filho direito).
-     * A altura de um nó folha é 0. A altura de `nullptr` é -1.
-     *
-     * @param node Ponteiro para o nó cuja altura será atualizada.
-     * @return int A nova altura do nó.
-     */
-    int updateHeight(NodePtr node);
-
-    /**
-     * @brief Retorna a altura de um nó.
-     *
-     * @param node Ponteiro para o nó.
-     * @return int A altura do nó. Retorna -1 se o nó for `nullptr`.
-     */
-    int height(NodePtr node);
-
-    /**
-     * @brief Calcula o fator de balanceamento de um nó.
-     *
-     * O fator de balanceamento é a diferença entre a altura da subárvore esquerda
-     * e a altura da subárvore direita.
-     *
-     * @param node Ponteiro para o nó.
-     * @return int O fator de balanceamento do nó.
-     */
-    int balance(NodePtr node);
-
-    /**
      * @brief Realiza uma rotação simples à direita em torno do nó `p`.
      *
      * Usada para balancear a árvore quando ela está desbalanceada à esquerda.
@@ -263,8 +233,10 @@ private:
 public:
     /**
      * @brief Construtor padrão. Cria um conjunto vazio.
+     *
+     * Inicializa a árvore com um nó nil (sentinela) e define o tamanho como 0.
      */
-    RedBlackTree() = default;
+    RedBlackTree();
 
     /**
      * @brief Construtor de cópia. Cria um novo conjunto como cópia de `other`.
@@ -468,7 +440,7 @@ public:
     /**
      * @brief Imprime os elementos do conjunto em ordem crescente (in-order traversal).
      */
-    void printInOrder();
+    void print();
 
     /**
      * @brief Exibe a estrutura da árvore AVL de forma visual no console.
@@ -479,6 +451,14 @@ public:
 };
 
 // -------------------------------------------Implementação da classe RedBlackTree.------------------------------------------------------------------
+
+template <typename Key, typename Value>
+RedBlackTree<Key, Value>::RedBlackTree()
+{
+    nil = new Node(0, NodeRB<Key, Value>::BLACK, nullptr, nil, nil);
+    root = nil;
+    root->parent = nil;
+}
 
 template <typename Key, typename Value>
 RedBlackTree<Key, Value>::RedBlackTree(std::initializer_list<std::pair<Key, Value>> list) : RedBlackTree()
@@ -765,24 +745,6 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<
 }
 
 template <typename Key, typename Value>
-int RedBlackTree<Key, Value>::updateHeight(NodePtr node)
-{
-    return 1 + std::max(height(node->left), height(node->right));
-}
-
-template <typename Key, typename Value>
-int RedBlackTree<Key, Value>::height(NodePtr node)
-{
-    return (!node) ? 0 : node->height;
-}
-
-template <typename Key, typename Value>
-int RedBlackTree<Key, Value>::balance(NodePtr node)
-{
-    return height(node->right) - height(node->left);
-}
-
-template <typename Key, typename Value>
 NodeRB<Key, Value> *RedBlackTree<Key, Value>::rightRotation(NodePtr p)
 {
     NodePtr aux = p->left;
@@ -869,7 +831,7 @@ bool RedBlackTree<Key, Value>::contains(const Key &key)
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::printInOrder()
+void RedBlackTree<Key, Value>::print()
 {
     printInOrder(root);
 }
@@ -912,7 +874,7 @@ void RedBlackTree<Key, Value>::bshow(NodePtr node, std::string heranca)
         return;
     }
 
-    std::cout << (node->color == NodeRB::RED ? "\x1b[31m" : "\x1b[30m") << "(" << node->key.first << ", " << node->key.second << ")" << "\x1b[0m" << std::endl;
+    std::cout << (node->color == NodeRB<Key, Value>::RED ? "\x1b[31m" : "\x1b[30m") << "(" << node->key.first << ", " << node->key.second << ")" << "\x1b[0m" << std::endl;
 
     if (node != nullptr and (node->left != nullptr or node->right != nullptr))
         bshow(node->left, heranca + "l");
