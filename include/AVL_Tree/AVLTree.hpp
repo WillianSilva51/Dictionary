@@ -460,7 +460,7 @@ public:
     /**
      * @brief Imprime os elementos do conjunto em ordem crescente (in-order traversal).
      */
-    void printInOrder();
+    void print();
 
     /**
      * @brief Exibe a estrutura da árvore AVL de forma visual no console.
@@ -861,7 +861,7 @@ bool AVLTree<Key, Value>::contains(const Key &key)
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::printInOrder()
+void AVLTree<Key, Value>::print()
 {
     printInOrder(root);
 }

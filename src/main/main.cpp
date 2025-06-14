@@ -8,7 +8,7 @@ int main()
 {
     AVLTree<string, int> tree = {{"Alice", 25}, {"Bob", 30}, {"Charlie", 35}, {"David", 40}, {"Eve", 45}, {"Frank", 50}, {"Grace", 55}};
 
-    tree.printInOrder();
+    tree.print();
     cout << endl;
 
     tree.erase("Charlie");
