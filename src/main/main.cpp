@@ -30,8 +30,6 @@ int main()
 
     cout << boolalpha << tree.contains("Zoe") << endl; // Check if Zoe is in the tree
 
-    tree.printInOrder();
-
     for (const auto &pair : tree)
     {
         cout << pair.first << ": " << pair.second << endl; // Print all elements in the tree
