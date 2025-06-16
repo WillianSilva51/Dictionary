@@ -22,8 +22,12 @@ class IteratorRB
 private:
     /// @brief Ponteiro para um nó da árvore Red-Black Tree.
     using NodePtr = NodeRB<Key, Value> *;
+
     /// @brief Pilha para armazenar o caminho durante a travessia.
     std::stack<NodePtr> path;
+
+    /// @brief Ponteiro para o nó nil (sentinela) da árvore.
+    NodePtr nil{nullptr};
 
 public:
     /// @brief Categoria do iterador, indica que é um iterador de entrada.
@@ -60,10 +64,10 @@ public:
      *
      * @param root Ponteiro para o nó raiz da árvore Red-Black Tree.
      */
-    IteratorRB(NodePtr root)
+    IteratorRB(NodePtr root, NodePtr nil) : nil(nil)
     {
         NodePtr current = root;
-        while (current != nullptr)
+        while (current != nil)
         {
             path.push(current);
             current = current->left;
@@ -109,11 +113,11 @@ public:
         NodePtr node = path.top();
         path.pop();
 
-        if (node->right != nullptr)
+        if (node->right != nil)
         {
             NodePtr current = node->right;
 
-            while (current != nullptr)
+            while (current != nil)
             {
                 path.push(current);
                 current = current->left;

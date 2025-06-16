@@ -42,8 +42,12 @@ struct NodeRB
     /**
      * @brief Cor do nó (VERMELHO ou PRETO).
      * Utiliza as constantes `RED` ou `BLACK`.
+     *
+     * @details
+     * A cor é usada para manter as propriedades de balanceamento da Árvore Rubro-Negra.
+     * Por padrão, os nós são inicializados como VERMELHOS (`RED`).
      */
-    bool color;
+    bool color{RED};
 
     /**
      * @brief Ponteiro para o nó pai.
@@ -72,6 +76,6 @@ struct NodeRB
      * @param left Ponteiro para o filho esquerdo.
      * @param right Ponteiro para o filho direito.
      */
-    NodeRB(const std::pair<Key, Value> &key, const bool &color = RED, NodeRB<Key, Value> *parent = nullptr, NodeRB<Key, Value> *left = nullptr, NodeRB<Key, Value> *right = nullptr)
+    NodeRB(const std::pair<Key, Value> &key, const bool &color, NodeRB<Key, Value> *parent, NodeRB<Key, Value> *left, NodeRB<Key, Value> *right)
         : key(key), color(color), parent(parent), left(left), right(right) {}
 };
