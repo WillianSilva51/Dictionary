@@ -112,7 +112,7 @@ private:
      * @param key A chave cujo valor será atualizado.
      * @return NodePtr Ponteiro para o nó atualizado.
      */
-    NodeRB<Key, Value> *update(NodePtr p, const std::pair<Key, Value> &key);
+    void update(NodePtr p, const std::pair<Key, Value> &key);
 
     /**
      * @brief Acessa o valor associado a uma chave na árvore.
@@ -136,7 +136,7 @@ private:
      *          (geralmente o pai do nó removido ou o nó que o substituiu).
      * @return NodePtr Ponteiro para a raiz da subárvore balanceada.
      */
-    NodeRB<Key, Value> *fixup_deletion(NodePtr p);
+    void fixup_deletion(NodePtr p);
 
     /**
      * @brief Função auxiliar recursiva para remover um elemento da árvore.
@@ -149,7 +149,7 @@ private:
      * @param key A chave a ser removida.
      * @return NodePtr Ponteiro para a raiz da subárvore modificada.
      */
-    NodeRB<Key, Value> *remove(NodePtr p, const Key &key);
+    NodeRB<Key, Value> *remove(NodePtr p, NodePtr key);
 
     /**
      * @brief Remove o nó sucessor de um dado nó e o retorna.
@@ -182,7 +182,7 @@ private:
      * @param p Ponteiro para o nó que será a raiz da rotação (o nó desbalanceado).
      * @return NodePtr Ponteiro para a nova raiz da subárvore após a rotação.
      */
-    NodeRB<Key, Value> *rightRotation(NodePtr p);
+    void rightRotation(NodePtr p);
 
     /**
      * @brief Realiza uma rotação simples à esquerda em torno do nó `p`.
@@ -192,7 +192,7 @@ private:
      * @param p Ponteiro para o nó que será a raiz da rotação (o nó desbalanceado).
      * @return NodePtr Ponteiro para a nova raiz da subárvore após a rotação.
      */
-    NodeRB<Key, Value> *leftRotation(NodePtr p);
+    void leftRotation(NodePtr p);
 
     /**
      * @brief Função auxiliar recursiva para verificar se uma chave está contida na árvore.
@@ -354,7 +354,7 @@ public:
      *
      * @param other O outro conjunto com o qual trocar o conteúdo.
      */
-    void swap(RedBlackTree<Key, Value> &other);
+    void swap(RedBlackTree<Key, Value> &other) noexcept;
 
     /**
      * @brief Insere uma chave no conjunto.
@@ -395,7 +395,7 @@ public:
      *
      * @param key O par chave-valor a ser atualizado ou inserido.
      */
-    void update(const std::pair<Key, Value> &key) { root = update(root, key); };
+    void update(const std::pair<Key, Value> &key) { update(root, key); };
 
     /**
      * @brief Sobrecarga do operador de atribuição para atualizar ou inserir uma chave.
@@ -456,7 +456,7 @@ template <typename Key, typename Value>
 RedBlackTree<Key, Value>::RedBlackTree()
 {
     nil = new NodeRB<Key, Value>({Key(), Value()}, NodeRB<Key, Value>::BLACK, nullptr, nullptr, nullptr);
-    nil->left = nil->right = nil;
+    nil->left = nil->right = nil->parent = nil;
     root = nil;
     root->parent = nil;
 }
@@ -513,7 +513,7 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::clear(NodePtr root)
         root->right = clear(root->right);
 
         delete root;
-        return nullptr;
+        return nil; // Retorna o nó nil após limpar a subárvore
     }
 
     return root;
@@ -527,21 +527,75 @@ void RedBlackTree<Key, Value>::clear()
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::swap(RedBlackTree<Key, Value> &other)
+void RedBlackTree<Key, Value>::swap(RedBlackTree<Key, Value> &other) noexcept
 {
     std::swap(root, other.root);
     std::swap(size_m, other.size_m);
+    std::swap(nil, other.nil);
+    std::swap(comparisons, other.comparisons);
+    std::swap(rotations, other.rotations);
 }
 
 template <typename Key, typename Value>
 void RedBlackTree<Key, Value>::fixup_node(NodePtr p)
 {
-    while (p->color == NodeRB<Key, Value>::RED)
+    while (p != root && p->parent->color == NodeRB<Key, Value>::RED)
     {
         if (p->parent == p->parent->parent->left)
         {
+            NodePtr uncle = p->parent->parent->right;
+
+            if (uncle->color == NodeRB<Key, Value>::RED)
+            {
+                p->parent->color = NodeRB<Key, Value>::BLACK;
+                uncle->color = NodeRB<Key, Value>::BLACK;
+                p->parent->parent->color = NodeRB<Key, Value>::RED;
+                p = p->parent->parent;
+            }
+            else
+            {
+                if (p == p->parent->right)
+                {
+                    p = p->parent;
+                    rotations++;
+                    leftRotation(p);
+                }
+
+                p->parent->color = NodeRB<Key, Value>::BLACK;
+                p->parent->parent->color = NodeRB<Key, Value>::RED;
+                rotations++;
+                rightRotation(p->parent->parent);
+            }
+        }
+        else
+        {
+            NodePtr uncle = p->parent->parent->left;
+
+            if (uncle->color == NodeRB<Key, Value>::RED)
+            {
+                p->parent->color = NodeRB<Key, Value>::BLACK;
+                uncle->color = NodeRB<Key, Value>::BLACK;
+                p->parent->parent->color = NodeRB<Key, Value>::RED;
+                p = p->parent->parent;
+            }
+            else
+            {
+                if (p == p->parent->left)
+                {
+                    p = p->parent;
+                    rotations++;
+                    rightRotation(p);
+                }
+
+                p->parent->color = NodeRB<Key, Value>::BLACK;
+                p->parent->parent->color = NodeRB<Key, Value>::RED;
+                rotations++;
+                leftRotation(p->parent->parent);
+            }
         }
     }
+
+    root->color = NodeRB<Key, Value>::BLACK; // A raiz sempre deve ser preta
 }
 
 template <typename Key, typename Value>
@@ -557,7 +611,10 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::insert(NodePtr p, const NodePtr ke
         if (key->key.first < aux->key.first)
             aux = aux->left;
         else if (key->key.first > aux->key.first)
+        {
+            comparisons++;
             aux = aux->right;
+        }
         else
             return p; // A chave já existe, não insere novamente
     }
@@ -572,10 +629,12 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::insert(NodePtr p, const NodePtr ke
     }
     else if (key->key.first < parent->key.first)
     {
+        comparisons++;
         parent->left = key;
     }
     else
     {
+        comparisons += 2;
         parent->right = key;
     }
 
@@ -596,36 +655,50 @@ void RedBlackTree<Key, Value>::insert(const std::pair<Key, Value> &key)
 template <typename Key, typename Value>
 void RedBlackTree<Key, Value>::erase(const Key &key)
 {
-    root = remove(root, key);
-}
+    NodePtr aux = root;
 
-template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::fixup_deletion(NodePtr p)
-{
-}
-
-template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::remove(NodePtr p, const Key &key)
-{
-    if (p == nil)
-        return p;
-
-    comparisons++;
-    if (key < p->key.first)
-        p->left = remove(p->left, key);
-    else if (key > p->key.first)
-        p->right = remove(p->right, key);
-    else if (p->right == nil)
+    while (aux != nil and aux->key.first != key)
     {
-        NodePtr child = p->left;
-        delete p;
-        size_m--;
-        return child;
+        comparisons++;
+        if (key < aux->key.first)
+            aux = aux->left;
+        else
+        {
+            comparisons++;
+            aux = aux->right;
+        }
+    }
+
+    if (aux != nil) // Realiza a remoção se a chave for encontrada
+        root = remove(root, aux);
+
+    // Se a chave não for encontrada, não faz nada
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::fixup_deletion(NodePtr p)
+{
+}
+
+template <typename Key, typename Value>
+NodeRB<Key, Value> *RedBlackTree<Key, Value>::remove(NodePtr p, NodePtr key)
+{
+    NodePtr aux{nullptr};
+
+    if (key->left == nil or key->right == nil)
+    {
+        aux = key;
     }
     else
-        p->right = remove_successor(p, p->right);
-
-    p = fixup_deletion(p);
+    {
+        aux = remove_successor(p, key->right);
+        key->key = aux->key;
+        key = aux;
+    }
+    if (aux->left != nil)
+    {
+        key = aux->left;
+    }
 
     return p;
 }
@@ -692,32 +765,32 @@ Value &RedBlackTree<Key, Value>::operator[](const Key &key)
 }
 
 template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<Key, Value> &key)
+void RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<Key, Value> &key)
 {
     if (p == nil)
     {
-        size_m++;
-        return new NodeRB<Key, Value>(key);
+        insert(key); // Se o nó não existir, insere a chave
+        return;
     }
 
     comparisons++;
     if (key.first == p->key.first)
     {
         p->key.second = key.second; // Atualiza o valor
-        return p;
     }
     else if (key.first < p->key.first)
-        p->left = update(p->left, key);
+    {
+        comparisons++;
+        update(p->left, key);
+    }
     else
-        p->right = update(p->right, key);
+        update(p->right, key);
 
     fixup_node(p);
-
-    return p;
 }
 
 template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::rightRotation(NodePtr p)
+void RedBlackTree<Key, Value>::rightRotation(NodePtr p)
 {
     NodePtr aux = p->left;
     p->left = aux->right;
@@ -740,12 +813,10 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::rightRotation(NodePtr p)
     }
     aux->right = p;
     p->parent = aux;
-
-    return aux;
 }
 
 template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::leftRotation(NodePtr p)
+void RedBlackTree<Key, Value>::leftRotation(NodePtr p)
 {
     NodePtr aux = p->right;
     p->right = aux->left;
@@ -768,8 +839,6 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::leftRotation(NodePtr p)
     }
     aux->left = p;
     p->parent = aux;
-
-    return aux;
 }
 
 template <typename Key, typename Value>
