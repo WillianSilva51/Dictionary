@@ -6,21 +6,11 @@
 
 #include "RB_Tree/node/NodeRB.hpp"
 #include "RB_Tree/iteratorRB/IteratorRB.hpp"
+#include "Dictionary/Dictionary.hpp"
 
 /**
  * @file RedBlackTree.hpp
  *
- * @brief Classe que implementa uma Árvore AVL.
- *
- * A Árvore AVL é uma árvore de busca binária auto-balanceável, onde a diferença
- * entre as alturas das subárvores esquerda e direita de qualquer nó é no máximo 1.
- * Isso garante que as operações de busca, inserção e remoção tenham complexidade
- * de tempo O(log n) no pior caso, onde n é o número de elementos no conjunto.
- *
- * @tparam Key, Value Tipo dos elementos armazenados no conjunto. Deve suportar operadores
- *           de comparação ( `<`, `==`, `>`).
- */
-/**
  * @brief Implementação de uma Árvore Rubro-Negra (Red-Black Tree).
  *
  * A Árvore Rubro-Negra é uma árvore de busca binária auto-balanceada que
@@ -33,7 +23,7 @@
  * @tparam Value O tipo do valor associado a cada chave.
  */
 template <typename Key, typename Value>
-class RedBlackTree
+class RedBlackTree : public Dictionary<Key, Value>
 {
     /**
      * @brief Alias para um ponteiro para um nó da árvore.
@@ -228,7 +218,7 @@ private:
      *
      * @param node Ponteiro para o nó raiz da subárvore a ser impressa.
      */
-    void printInOrder(NodePtr node);
+    void printInOrder(NodePtr node) const;
 
     /**
      * @brief Função auxiliar recursiva para exibir a estrutura da árvore.
@@ -425,7 +415,7 @@ public:
      *
      * @param key A chave do elemento a ser removido.
      */
-    void erase(const Key &key);
+    void remove(const Key &key);
 
     /**
      * @brief Verifica se o conjunto contém uma determinada chave.
@@ -452,7 +442,7 @@ public:
     /**
      * @brief Imprime os elementos do conjunto em ordem crescente (travessia in-order).
      */
-    void print();
+    void print() const;
 
     /**
      * @brief Exibe a estrutura da Árvore Rubro-Negra de forma visual no console.
@@ -665,7 +655,7 @@ void RedBlackTree<Key, Value>::insert(const std::pair<Key, Value> &key)
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::erase(const Key &key)
+void RedBlackTree<Key, Value>::remove(const Key &key)
 {
     NodePtr aux = root;
 
@@ -1014,13 +1004,13 @@ bool RedBlackTree<Key, Value>::contains(const Key &key)
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::print()
+void RedBlackTree<Key, Value>::print() const
 {
     printInOrder(root);
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::printInOrder(NodePtr node)
+void RedBlackTree<Key, Value>::printInOrder(NodePtr node) const
 {
     if (node == nil)
         return;

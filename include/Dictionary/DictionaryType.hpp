@@ -1,0 +1,59 @@
+#pragma once
+
+#include <memory>
+
+#include <AVL_Tree/AVLTree.hpp>
+#include <RB_Tree/RedBlackTree.hpp>
+#include <Dictionary/DictionaryType.hpp>
+
+/**
+ * @file DictionaryType.hpp
+ *
+ * @brief Enumera as estruturas de dados subjacentes disponíveis para uma implementação de dicionário.
+ *
+ * Isso permite a seleção de um tipo de dicionário específico em tempo de execução ou de compilação,
+ * cada um com diferentes características de desempenho em relação às operações de inserção, exclusão e busca.
+ *
+ * - `AVL`: Uma árvore de busca binária auto-balanceada (árvore Adelson-Velsky e Landis).
+ * - `RBTREE`: Uma árvore de busca binária auto-balanceada (Árvore Rubro-Negra).
+ * - `CHAINING_HASH`: Uma tabela hash que resolve colisões por encadeamento.
+ * - `OPEN_ADDRESSING_HASH`: Uma tabela hash que resolve colisões usando endereçamento aberto.
+ */
+enum class DictionaryType
+{
+    AVL,
+    RBTREE,
+    CHAINING_HASH,
+    OPEN_ADDRESSING_HASH,
+};
+
+/**
+ * @brief Cria uma instância de um dicionário do tipo especificado.
+ * 
+ * Esta função atua como uma fábrica (factory) para criar diferentes implementações
+ * de dicionários que herdam da classe base `Dictionary`. A implementação específica
+ * é escolhida com base no valor do enumerador `DictionaryType` fornecido.
+ * 
+ * @tparam Key O tipo das chaves no dicionário.
+ * @tparam Value O tipo dos valores associados às chaves.
+ * @param type O tipo de dicionário a ser criado, conforme o enumerador `DictionaryType`.
+ * @return Um `std::unique_ptr` para a nova instância do dicionário.
+ * @throws std::invalid_argument Lançada se o `type` fornecido for desconhecido ou ainda não implementado.
+ */
+template <typename Key, typename Value>
+std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &type)
+{
+    switch (type)
+    {
+    case DictionaryType::AVL:
+        return std::make_unique<AVLTree<Key, Value>>();
+    case DictionaryType::RBTREE:
+        return std::make_unique<RedBlackTree<Key, Value>>();
+    case DictionaryType::CHAINING_HASH:
+        // Implementação de dicionário com encadeamento
+    case DictionaryType::OPEN_ADDRESSING_HASH:
+        // Implementação de dicionário com endereçamento aberto
+    default:
+        throw std::invalid_argument("Tipo de dicionário desconhecido");
+    }
+}

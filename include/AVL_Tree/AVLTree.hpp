@@ -6,6 +6,7 @@
 
 #include "AVL_Tree/node/Node.hpp"
 #include "AVL_Tree/iteratorAVL/IteratorAVL.hpp"
+#include "Dictionary/Dictionary.hpp"
 
 /**
  * @file AVLTree.hpp
@@ -21,7 +22,7 @@
  *           de comparação ( `<`, `==`, `>`).
  */
 template <typename Key, typename Value>
-class AVLTree
+class AVLTree : public Dictionary<Key, Value>
 {
     /**
      * @brief Alias para um ponteiro para um nó da árvore.
@@ -141,7 +142,7 @@ private:
      * @param key A chave a ser removida.
      * @return NodePtr Ponteiro para a raiz da subárvore modificada.
      */
-    Node<Key, Value> *remove(NodePtr p, const Key &key);
+    Node<Key, Value> *m_remove(NodePtr p, const Key &key);
 
     /**
      * @brief Remove o nó sucessor de um dado nó e o retorna.
@@ -242,7 +243,7 @@ private:
      *
      * @param node Ponteiro para o nó raiz da subárvore a ser impressa.
      */
-    void printInOrder(NodePtr node);
+    void printInOrder(NodePtr node) const;
 
     /**
      * @brief Função auxiliar recursiva para exibir a estrutura da árvore.
@@ -374,7 +375,7 @@ public:
      *
      * @param other O outro conjunto com o qual trocar o conteúdo.
      */
-    void swap(AVLTree<Key, Value> &other);
+    void swap(AVLTree<Key, Value> &other) noexcept;
 
     /**
      * @brief Insere uma chave no conjunto.
@@ -434,7 +435,7 @@ public:
      *
      * @param key A chave a ser removida.
      */
-    void erase(const Key &key);
+    void remove(const Key &key);
 
     /**
      * @brief Verifica se o conjunto contém uma determinada chave.
@@ -460,7 +461,7 @@ public:
     /**
      * @brief Imprime os elementos do conjunto em ordem crescente (in-order traversal).
      */
-    void print();
+    void print() const;
 
     /**
      * @brief Exibe a estrutura da árvore AVL de forma visual no console.
@@ -536,10 +537,12 @@ void AVLTree<Key, Value>::clear()
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::swap(AVLTree<Key, Value> &other)
+void AVLTree<Key, Value>::swap(AVLTree<Key, Value> &other) noexcept
 {
     std::swap(root, other.root);
     std::swap(size_m, other.size_m);
+    std::swap(comparisons, other.comparisons);
+    std::swap(rotations, other.rotations);
 }
 
 template <typename Key, typename Value>
@@ -606,9 +609,9 @@ void AVLTree<Key, Value>::insert(const std::pair<Key, Value> &key)
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::erase(const Key &key)
+void AVLTree<Key, Value>::remove(const Key &key)
 {
-    root = remove(root, key);
+    root = m_remove(root, key);
 }
 
 template <typename Key, typename Value>
@@ -645,18 +648,18 @@ Node<Key, Value> *AVLTree<Key, Value>::fixup_deletion(NodePtr p)
 }
 
 template <typename Key, typename Value>
-Node<Key, Value> *AVLTree<Key, Value>::remove(NodePtr p, const Key &key)
+Node<Key, Value> *AVLTree<Key, Value>::m_remove(NodePtr p, const Key &key)
 {
     if (p == nullptr)
         return p;
 
     comparisons++;
     if (key < p->key.first)
-        p->left = remove(p->left, key);
+        p->left = m_remove(p->left, key);
     else if (key > p->key.first)
     {
         comparisons++;
-        p->right = remove(p->right, key);
+        p->right = m_remove(p->right, key);
     }
     else if (p->right == nullptr)
     {
@@ -867,13 +870,13 @@ bool AVLTree<Key, Value>::contains(const Key &key)
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::print()
+void AVLTree<Key, Value>::print() const
 {
     printInOrder(root);
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::printInOrder(NodePtr node)
+void AVLTree<Key, Value>::printInOrder(NodePtr node) const
 {
     if (node == nullptr)
         return;
