@@ -20,6 +20,18 @@
  * @tparam Key, Value Tipo dos elementos armazenados no conjunto. Deve suportar operadores
  *           de comparação ( `<`, `==`, `>`).
  */
+/**
+ * @brief Implementação de uma Árvore Rubro-Negra (Red-Black Tree).
+ *
+ * A Árvore Rubro-Negra é uma árvore de busca binária auto-balanceada que
+ * garante que as operações de inserção, remoção e busca tenham complexidade
+ * de tempo no pior caso de O(log n), onde n é o número de nós na árvore.
+ * Isso é alcançado através da manutenção de um conjunto de propriedades
+ * (propriedades Rubro-Negras) que mantêm a árvore aproximadamente balanceada.
+ *
+ * @tparam Key O tipo da chave dos elementos.
+ * @tparam Value O tipo do valor associado a cada chave.
+ */
 template <typename Key, typename Value>
 class RedBlackTree
 {
@@ -37,24 +49,25 @@ class RedBlackTree
     friend class IteratorRB<Key, Value>;
 
     /**
-     * @brief Alias para o iterador da árvore AVL.
+     * @brief Alias para o iterador da árvore Rubro-Negra.
      *
      * Este alias é utilizado para simplificar a declaração de iteradores
-     * que percorrem a árvore AVL.
+     * que percorrem a árvore.
      */
     using iterator = IteratorRB<Key, Value>;
 
 private:
     /**
-     * @brief Ponteiro para o nó raiz da Árvore AVL.
+     * @brief Ponteiro para o nó raiz da Árvore Rubro-Negra.
      */
     NodeRB<Key, Value> *root{nullptr};
 
     /**
-     * @brief Ponteiro para o nó nil (sentinela) da Árvore AVL.
+     * @brief Ponteiro para o nó nil (sentinela) da Árvore Rubro-Negra.
      *
-     * O nó nil é utilizado para simplificar a lógica de inserção, remoção e
-     * balanceamento, evitando verificações nulas em nós folha.
+     * O nó nil é um nó sentinela (sempre preto) que representa todas as folhas
+     * externas da árvore, simplificando a lógica de inserção, remoção e
+     * balanceamento ao evitar verificações de ponteiros nulos.
      */
     NodeRB<Key, Value> *nil{nullptr};
 
@@ -74,30 +87,30 @@ private:
      * @brief Contador de rotações realizadas durante as operações de balanceamento da árvore.
      *
      * Este contador é utilizado para medir a quantidade de rotações necessárias
-     * para manter a propriedade de balanceamento da árvore AVL.
+     * para manter as propriedades da árvore Rubro-Negra.
      */
     long long rotations{0};
 
     /**
-     * @brief Realiza o balanceamento da árvore AVL após uma inserção ou remoção.
+     * @brief Restaura as propriedades da Árvore Rubro-Negra após uma inserção.
      *
-     * Esta função é chamada recursivamente a partir do nó inserido/removido
-     * (ou seu pai) até a raiz, verificando e corrigindo desbalanceamentos
-     * através de rotações simples ou duplas.
+     * Esta função é chamada a partir do nó recém-inserido (que é sempre vermelho)
+     * e sobe na árvore, corrigindo quaisquer violações das propriedades Rubro-Negras
+     * (como um nó vermelho tendo um pai vermelho) através de recolorações e rotações.
      *
-     * @param p Ponteiro para o nó a partir do qual o balanceamento deve ser verificado.
-     * @return NodePtr Ponteiro para a raiz da subárvore balanceada.
+     * @param p Ponteiro para o nó a partir do qual a correção deve começar.
      */
     void fixup_node(NodePtr p);
 
     /**
-     * @brief Função auxiliar recursiva para inserir um elemento na árvore.
+     * @brief Função auxiliar para inserir um novo nó na árvore.
      *
-     * Percorre a árvore para encontrar a posição correta de inserção da chave.
-     * Após a inserção, chama `fixup_node` para garantir o balanceamento da AVL.
+     * Percorre a árvore para encontrar a posição correta de inserção.
+     * Após a inserção, chama `fixup_node` para garantir que as propriedades
+     * da Árvore Rubro-Negra sejam mantidas.
      *
-     * @param p Ponteiro para o nó raiz da subárvore onde a chave será inserida.
-     * @param key A chave a ser inserida.
+     * @param p Ponteiro para o nó raiz da subárvore onde o nó será inserido.
+     * @param key O nó a ser inserido.
      * @return NodePtr Ponteiro para a raiz da subárvore modificada.
      */
     NodeRB<Key, Value> *insert(NodePtr p, const NodePtr key);
@@ -109,65 +122,60 @@ private:
      * Se a chave não existir, lança uma exceção.
      *
      * @param p Ponteiro para o nó raiz da subárvore onde a chave será atualizada.
-     * @param key A chave cujo valor será atualizado.
-     * @return NodePtr Ponteiro para o nó atualizado.
+     * @param key O par chave-valor a ser atualizado.
      */
     void update(NodePtr p, const std::pair<Key, Value> &key);
 
     /**
      * @brief Acessa o valor associado a uma chave na árvore.
      *
-     * Localiza o nó com a chave especificada e retorna seu valor.
-     * Se a chave não existir, lança uma exceção.
+     * Localiza o nó com a chave especificada e retorna uma referência ao seu valor.
+     * Se a chave não existir, lança uma exceção `std::out_of_range`.
      *
      * @param p Ponteiro para o nó raiz da subárvore onde a chave será procurada.
      * @param key A chave cujo valor será acessado.
-     * @return Value O valor associado à chave.
+     * @return Value& Uma referência ao valor associado à chave.
      */
     Value &at(NodePtr p, const Key &key);
 
     /**
-     * @brief Realiza o balanceamento da árvore AVL após uma remoção.
+     * @brief Restaura as propriedades da Árvore Rubro-Negra após uma remoção.
      *
-     * Similar ao `fixup_node`, mas especificamente ajustado para o processo de
-     * remoção, que pode exigir diferentes verificações de balanceamento.
+     * A remoção de um nó pode violar as propriedades da árvore (especialmente a
+     * propriedade da altura negra). Esta função corrige essas violações subindo
+     * na árvore a partir do ponto da remoção, usando rotações e recolorações.
      *
-     * @param p Ponteiro para o nó a partir do qual o balanceamento deve ser verificado
-     *          (geralmente o pai do nó removido ou o nó que o substituiu).
-     * @return NodePtr Ponteiro para a raiz da subárvore balanceada.
+     * @param p Ponteiro para o nó que substituiu o nó removido, a partir do qual
+     *          a correção deve ser verificada.
      */
     void fixup_deletion(NodePtr p);
 
     /**
-     * @brief Função auxiliar recursiva para remover um elemento da árvore.
+     * @brief Função auxiliar para remover um elemento da árvore.
      *
      * Localiza o nó com a chave especificada. Trata os casos de remoção de nó
-     * folha, nó com um filho ou nó com dois filhos (neste caso, substituindo
-     * pelo sucessor). Após a remoção, chama `fixup_deletion` para balancear a árvore.
+     * com zero, um ou dois filhos (neste caso, substituindo pelo sucessor).
+     * Após a remoção, chama `fixup_deletion` para rebalancear a árvore.
      *
-     * @param p Ponteiro para o nó raiz da subárvore de onde a chave será removida.
-     * @param key A chave a ser removida.
-     * @return NodePtr Ponteiro para a raiz da subárvore modificada.
+     * @param key Ponteiro para o nó a ser removido.
      */
-    NodeRB<Key, Value> *remove(NodePtr p, NodePtr key);
+    void remove(NodePtr key);
 
     /**
-     * @brief Remove o nó sucessor de um dado nó e o retorna.
+     * @brief Encontra o nó com a menor chave na subárvore de um dado nó.
      *
-     * Usado no processo de remoção de um nó com dois filhos. O sucessor é o menor
-     * nó na subárvore direita.
+     * Usado no processo de remoção para encontrar o sucessor in-order de um nó
+     * (o menor nó na subárvore direita).
      *
-     * @param root Ponteiro para a raiz da subárvore onde o sucessor será procurado.
-     * @param node O nó cujo sucessor deve ser removido. (Este parâmetro parece ser o nó a ser substituído, e `root` a sua subárvore direita)
-     * @return NodePtr Ponteiro para o nó sucessor que foi removido da sua posição original.
-     *         A função também modifica a árvore para remover o sucessor de sua posição original.
+     * @param node Ponteiro para a raiz da subárvore onde o mínimo será procurado.
+     * @return NodePtr Ponteiro para o nó com a menor chave na subárvore.
      */
-    NodeRB<Key, Value> *remove_successor(NodePtr root, NodePtr node);
+    NodeRB<Key, Value> *minimun(NodePtr node);
 
     /**
      * @brief Função auxiliar recursiva para remover todos os nós da árvore.
      *
-     * Realiza um percurso em pós-ordem para deletar todos os nós.
+     * Realiza um percurso em pós-ordem para deletar todos os nós e liberar a memória.
      *
      * @param root Ponteiro para o nó raiz da subárvore a ser limpa.
      * @return NodePtr Sempre retorna `nullptr` após limpar a subárvore.
@@ -177,20 +185,20 @@ private:
     /**
      * @brief Realiza uma rotação simples à direita em torno do nó `p`.
      *
-     * Usada para balancear a árvore quando ela está desbalanceada à esquerda.
+     * Usada como parte do processo de rebalanceamento para manter as
+     * propriedades da Árvore Rubro-Negra.
      *
-     * @param p Ponteiro para o nó que será a raiz da rotação (o nó desbalanceado).
-     * @return NodePtr Ponteiro para a nova raiz da subárvore após a rotação.
+     * @param p Ponteiro para o nó que será o pivô da rotação.
      */
     void rightRotation(NodePtr p);
 
     /**
      * @brief Realiza uma rotação simples à esquerda em torno do nó `p`.
      *
-     * Usada para balancear a árvore quando ela está desbalanceada à direita.
+     * Usada como parte do processo de rebalanceamento para manter as
+     * propriedades da Árvore Rubro-Negra.
      *
-     * @param p Ponteiro para o nó que será a raiz da rotação (o nó desbalanceado).
-     * @return NodePtr Ponteiro para a nova raiz da subárvore após a rotação.
+     * @param p Ponteiro para o nó que será o pivô da rotação.
      */
     void leftRotation(NodePtr p);
 
@@ -205,7 +213,7 @@ private:
     bool contains(NodePtr root, const Key &key);
 
     /**
-     * @brief Insere todos os elementos da subárvore rooted em `node` no conjunto `result`.
+     * @brief Insere todos os elementos da subárvore com raiz em `node` no conjunto `result`.
      *
      * Função auxiliar usada para a operação de União de conjuntos.
      * Percorre a subárvore `node` e insere cada elemento em `result`.
@@ -234,14 +242,15 @@ public:
     /**
      * @brief Construtor padrão. Cria um conjunto vazio.
      *
-     * Inicializa a árvore com um nó nil (sentinela) e define o tamanho como 0.
+     * Inicializa a árvore com um nó sentinela `nil` e a raiz apontando para `nil`.
+     * O tamanho é inicializado como 0.
      */
     RedBlackTree();
 
     /**
      * @brief Construtor de cópia. Cria um novo conjunto como cópia de `other`.
      *
-     * Realiza uma cópia profunda dos elementos.
+     * Realiza uma cópia profunda de todos os nós da árvore `other`.
      *
      * @param other O conjunto a ser copiado.
      */
@@ -264,36 +273,36 @@ public:
     /**
      * @brief Retorna um iterador para o início do conjunto.
      *
-     * O iterador aponta para o menor elemento da árvore (in-order traversal).
+     * O iterador aponta para o menor elemento da árvore (travessia in-order).
      *
-     * @return IteratorRB<Key, Value> Um iterador para o início do conjunto.
+     * @return iterator Um iterador para o início do conjunto.
      */
     iterator begin() noexcept { return iterator(root, nil); }
 
     /**
      * @brief Retorna um iterador para o final do conjunto.
      *
-     * O iterador aponta para o elemento após o maior elemento da árvore.
+     * O iterador aponta para a posição após o último elemento (o nó sentinela `nil`).
      *
-     * @return IteratorRB<Key, Value> Um iterador para o final do conjunto.
+     * @return iterator Um iterador para o final do conjunto.
      */
     iterator end() noexcept { return iterator(nil, nil); }
 
     /**
      * @brief Retorna um iterador constante para o início do conjunto.
      *
-     * O iterador aponta para o menor elemento da árvore (in-order traversal).
+     * O iterador aponta para o menor elemento da árvore (travessia in-order).
      *
-     * @return IteratorRB<Key, Value> Um iterador constante para o início do conjunto.
+     * @return iterator Um iterador constante para o início do conjunto.
      */
     iterator cbegin() const noexcept { return iterator(root, nil); }
 
     /**
      * @brief Retorna um iterador constante para o final do conjunto.
      *
-     * O iterador aponta para o elemento após o maior elemento da árvore.
+     * O iterador aponta para a posição após o último elemento (o nó sentinela `nil`).
      *
-     * @return IteratorRB<Key, Value> Um iterador constante para o final do conjunto.
+     * @return iterator Um iterador constante para o final do conjunto.
      */
     iterator cend() const noexcept { return iterator(nil, nil); }
 
@@ -325,94 +334,96 @@ public:
     /**
      * @brief Retorna o número de comparações realizadas durante as operações.
      *
-     * Útil para medir a eficiência das operações na árvore.
+     * Útil para análise de desempenho da árvore.
      *
-     * @return long long O número de comparações realizadas.
+     * @return long long O número total de comparações.
      */
     long long getComparisons() const noexcept { return comparisons; }
 
     /**
      * @brief Retorna o número de rotações realizadas durante as operações.
      *
-     * Útil para medir a quantidade de balanceamento necessário na árvore.
+     * Útil para medir a atividade de rebalanceamento da árvore.
      *
-     * @return long long O número de rotações realizadas.
+     * @return long long O número total de rotações.
      */
     long long getRotations() const noexcept { return rotations; }
 
     /**
      * @brief Remove todos os elementos do conjunto.
      *
-     * Após esta operação, `size()` retornará 0 e `empty()` retornará `true`.
+     * Após esta operação, `size()` retornará 0 e a árvore conterá apenas a raiz
+     * apontando para o nó sentinela `nil`.
      */
     void clear();
 
     /**
      * @brief Troca o conteúdo deste conjunto com o de `other`.
      *
-     * Operação eficiente que apenas troca os ponteiros raiz e os tamanhos.
+     * Operação eficiente que apenas troca os ponteiros internos e os contadores.
      *
      * @param other O outro conjunto com o qual trocar o conteúdo.
      */
     void swap(RedBlackTree<Key, Value> &other) noexcept;
 
     /**
-     * @brief Insere uma chave no conjunto.
+     * @brief Insere um par chave-valor no conjunto.
      *
-     * Se a chave já existir, o conjunto não é modificado.
-     * A árvore é balanceada após a inserção, se necessário.
+     * Se a chave já existir, a operação é ignorada. Caso contrário, um novo nó
+     * é inserido e a árvore é rebalanceada para manter as propriedades Rubro-Negras.
      *
-     * @param key A chave a ser inserida.
+     * @param key O par chave-valor a ser inserido.
      */
     void insert(const std::pair<Key, Value> &key);
 
     /**
-     *  @brief Retorna o nó associado a uma chave.
+     * @brief Acessa o valor associado a uma chave, com verificação de limites.
      *
-     *  Se a chave não existir, lança uma exceção.
+     * Se a chave não existir no mapa, uma exceção `std::out_of_range` é lançada.
      *
-     *  @param key A chave a ser buscada.
-     *  @return NodePtr Ponteiro para o nó associado à chave.
+     * @param key A chave a ser buscada.
+     * @return Value& Uma referência ao valor associado à chave.
      */
     Value &at(const Key &key) { return at(root, key); };
 
     /**
-     * @brief Sobrecarga do operador de indexação para acessar o valor associado a uma chave.
+     * @brief Sobrecarga do operador de indexação para acessar ou inserir um elemento.
      *
-     * Permite usar a sintaxe `tree[key]` para acessar o valor associado à chave.
-     *  Se a chave não existir, cria uma nova entrada com valor padrão.
+     * Se `key` existir no mapa, retorna uma referência ao seu valor.
+     * Se `key` não existir, insere um novo elemento com essa chave (usando o
+     * construtor padrão de `Value`) e retorna uma referência ao novo valor.
      *
-     * @param key A chave a ser buscada.
-     * @return Value O valor associado à chave.
+     * @param key A chave do elemento a ser acessado ou inserido.
+     * @return Value& Uma referência ao valor associado à chave.
      */
     Value &operator[](const Key &key);
 
     /**
-     * @brief Atualiza o valor associado a uma chave existente ou insere uma nova chave.
+     * @brief Atualiza o valor de uma chave existente ou insere um novo par chave-valor.
      *
-     * Se a chave já existir, atualiza seu valor. Caso contrário, insere a nova chave.
-     * A árvore é balanceada após a atualização, se necessário.
+     * Se a chave já existir, seu valor é atualizado. Caso contrário, um novo
+     * par chave-valor é inserido.
      *
      * @param key O par chave-valor a ser atualizado ou inserido.
      */
     void update(const std::pair<Key, Value> &key) { update(root, key); };
 
     /**
-     * @brief Sobrecarga do operador de atribuição para atualizar ou inserir uma chave.
+     * @brief Operador de atribuição para atualizar ou inserir um par chave-valor.
      *
-     * Permite usar a sintaxe `tree = {key, value}` para atualizar ou inserir uma chave.
+     * Permite usar a sintaxe `tree = {key, value}` para atualizar ou inserir.
      *
      * @param key O par chave-valor a ser atualizado ou inserido.
      */
     void operator=(std::pair<Key, Value> &key) { root = update(root, key); };
 
     /**
-     * @brief Remove uma chave do conjunto.
+     * @brief Remove um elemento do conjunto pela chave.
      *
-     * Se a chave não existir, o conjunto não é modificado.
-     * A árvore é balanceada após a remoção, se necessário.
+     * Se a chave não for encontrada, o conjunto não é modificado.
+     * Após a remoção, a árvore é rebalanceada para manter as propriedades Rubro-Negras.
      *
-     * @param key A chave a ser removida.
+     * @param key A chave do elemento a ser removido.
      */
     void erase(const Key &key);
 
@@ -429,6 +440,7 @@ public:
      * @brief Retorna um novo conjunto que é a união deste conjunto com `other`.
      *
      * A união contém todos os elementos que estão em `this` ou em `other` (ou em ambos).
+     * Se uma chave existir em ambos, o valor de `this` é preservado.
      *
      * @param other O outro conjunto.
      * @return RedBlackTree<Key, Value> Um novo conjunto resultado da união.
@@ -438,14 +450,14 @@ public:
     // Funções de impressão
 
     /**
-     * @brief Imprime os elementos do conjunto em ordem crescente (in-order traversal).
+     * @brief Imprime os elementos do conjunto em ordem crescente (travessia in-order).
      */
     void print();
 
     /**
-     * @brief Exibe a estrutura da árvore AVL de forma visual no console.
+     * @brief Exibe a estrutura da Árvore Rubro-Negra de forma visual no console.
      *
-     * Útil para depuração e visualização do balanceamento da árvore.
+     * Útil para depuração e visualização da estrutura e cores dos nós.
      */
     void bshow();
 };
@@ -670,20 +682,93 @@ void RedBlackTree<Key, Value>::erase(const Key &key)
     }
 
     if (aux != nil) // Realiza a remoção se a chave for encontrada
-        root = remove(root, aux);
+        remove(aux);
 
     // Se a chave não for encontrada, não faz nada
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::fixup_deletion(NodePtr p)
+void RedBlackTree<Key, Value>::fixup_deletion(NodePtr x)
 {
+    while (x != root and x->color == NodeRB<Key, Value>::BLACK)
+    {
+        if (x == x->parent->left) // Se x for filho esquerdo
+        {
+            NodePtr w = x->parent->right;            // Irmão de x
+            if (w->color == NodeRB<Key, Value>::RED) // Caso 1
+            {
+                w->color = NodeRB<Key, Value>::BLACK;       // Muda a cor do irmão para preto
+                x->parent->color = NodeRB<Key, Value>::RED; // Muda a cor do pai para vermelho
+                leftRotation(x->parent);                    // Rotação à esquerda
+                w = x->parent->right;                       // Atualiza w
+            }
+
+            if (w->left->color == NodeRB<Key, Value>::BLACK and
+                w->right->color == NodeRB<Key, Value>::BLACK) // Caso 2
+            {
+                w->color = NodeRB<Key, Value>::RED; // Muda a cor do irmão para vermelho
+                x = x->parent;                      // Move x para o pai
+            }
+            else
+            {
+                if (w->right->color == NodeRB<Key, Value>::BLACK) // Caso 3
+                {
+                    w->left->color = NodeRB<Key, Value>::BLACK; // Muda a cor do filho esquerdo do irmão para preto
+                    w->color = NodeRB<Key, Value>::RED;         // Muda a cor do irmão para vermelho
+                    rightRotation(w);                           // Rotação à direita
+                    w = x->parent->right;                       // Atualiza w
+                }
+
+                w->color = x->parent->color; // Caso 4
+                x->parent->color = NodeRB<Key, Value>::BLACK;
+                w->right->color = NodeRB<Key, Value>::BLACK;
+                leftRotation(x->parent);
+                x = root; // Termina o loop
+            }
+        }
+        else
+        {
+            NodePtr w = x->parent->left;             // Irmão de x
+            if (w->color == NodeRB<Key, Value>::RED) // Caso 1
+            {
+                w->color = NodeRB<Key, Value>::BLACK;       // Muda a cor do irmão para preto
+                x->parent->color = NodeRB<Key, Value>::RED; // Muda a cor do pai para vermelho
+                rightRotation(x->parent);                   // Rotação à direita
+                w = x->parent->left;                        // Atualiza w
+            }
+
+            if (w->right->color == NodeRB<Key, Value>::BLACK and
+                w->left->color == NodeRB<Key, Value>::BLACK) // Caso 2
+            {
+                w->color = NodeRB<Key, Value>::RED; // Muda a cor do irmão para vermelho
+                x = x->parent;                      // Move x para o pai
+            }
+            else
+            {
+                if (w->left->color == NodeRB<Key, Value>::BLACK) // Caso 3
+                {
+                    w->right->color = NodeRB<Key, Value>::BLACK; // Muda a cor do filho direito do irmão para preto
+                    w->color = NodeRB<Key, Value>::RED;          // Muda a cor do irmão para vermelho
+                    leftRotation(w);                             // Rotação à esquerda
+                    w = x->parent->left;                         // Atualiza w
+                }
+
+                w->color = x->parent->color; // Caso 4
+                x->parent->color = NodeRB<Key, Value>::BLACK;
+                w->left->color = NodeRB<Key, Value>::BLACK;
+                rightRotation(x->parent);
+                x = root; // Termina o loop
+            }
+        }
+    }
+    x->color = NodeRB<Key, Value>::BLACK; // Garante que a raiz seja preta
 }
 
 template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::remove(NodePtr p, NodePtr key)
+void RedBlackTree<Key, Value>::remove(NodePtr key)
 {
     NodePtr aux{nullptr};
+    NodePtr aux2{nullptr};
 
     if (key->left == nil or key->right == nil)
     {
@@ -691,35 +776,58 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::remove(NodePtr p, NodePtr key)
     }
     else
     {
-        aux = remove_successor(p, key->right);
-        key->key = aux->key;
-        key = aux;
+        aux = minimun(key->right); // Encontra o sucessor (menor na subárvore direita)
     }
     if (aux->left != nil)
     {
-        key = aux->left;
+        aux2 = aux->left;
+    }
+    else
+    {
+        aux2 = aux->right;
+    }
+    aux2->parent = aux->parent;
+
+    if (aux->parent == nil)
+    {
+        root = aux2; // Se o nó removido era a raiz, atualiza a raiz
+    }
+    else if (aux == aux->parent->left)
+    {
+        aux->parent->left = aux2;
+    }
+    else
+    {
+        aux->parent->right = aux2;
     }
 
-    return p;
+    if (aux != key)
+    {
+        key->key = aux->key; // Copia a chave do nó removido para o nó substituto
+    }
+
+    if (aux->color == NodeRB<Key, Value>::BLACK)
+    {
+        // Se o nó removido era preto, precisamos corrigir o balanceamento
+        fixup_deletion(aux2);
+    }
+
+    delete aux; // Libera o nó removido
+    size_m--;
 }
 
 template <typename Key, typename Value>
-NodeRB<Key, Value> *RedBlackTree<Key, Value>::remove_successor(NodePtr root, NodePtr node)
+NodeRB<Key, Value> *RedBlackTree<Key, Value>::minimun(NodePtr node)
 {
-    if (node->left != nil)
-        node->left = remove_successor(root, node->left);
-    else
-    {
-        root->key = node->key;
-        NodePtr aux = node->right;
-        delete node;
-        size_m--;
-        return aux;
-    }
+    NodePtr aux = node;
 
-    node = fixup_deletion(node);
+    while (aux->left != nil)
+        aux = aux->left;
 
-    return node;
+    if (aux == nil)
+        throw std::out_of_range("No minimum node found in the subtree");
+
+    return aux; // Retorna o nó com a menor chave na subárvore
 }
 
 template <typename Key, typename Value>
@@ -792,6 +900,8 @@ void RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<Key, Value> &ke
 template <typename Key, typename Value>
 void RedBlackTree<Key, Value>::rightRotation(NodePtr p)
 {
+    rotations++; // Incrementa o contador de rotações
+
     NodePtr aux = p->left;
     p->left = aux->right;
 
@@ -818,6 +928,8 @@ void RedBlackTree<Key, Value>::rightRotation(NodePtr p)
 template <typename Key, typename Value>
 void RedBlackTree<Key, Value>::leftRotation(NodePtr p)
 {
+    rotations++; // Incrementa o contador de rotações
+
     NodePtr aux = p->right;
     p->right = aux->left;
 
