@@ -654,7 +654,10 @@ Node<Key, Value> *AVLTree<Key, Value>::remove(NodePtr p, const Key &key)
     if (key < p->key.first)
         p->left = remove(p->left, key);
     else if (key > p->key.first)
+    {
+        comparisons++;
         p->right = remove(p->right, key);
+    }
     else if (p->right == nullptr)
     {
         NodePtr child = p->left;
@@ -747,7 +750,10 @@ Node<Key, Value> *AVLTree<Key, Value>::update(NodePtr p, const std::pair<Key, Va
         return p;
     }
     else if (key.first < p->key.first)
+    {
+        comparisons++;
         p->left = update(p->left, key);
+    }
     else
         p->right = update(p->right, key);
 
