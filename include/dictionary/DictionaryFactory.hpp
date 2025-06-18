@@ -4,6 +4,7 @@
 
 #include <dictionary/avl_tree/AVLTree.hpp>
 #include <dictionary/rb_tree/RedBlackTree.hpp>
+#include <dictionary/hash_table_c/ChainedHashTable.hpp>
 
 /**
  * @file DictionaryType.hpp
@@ -49,9 +50,9 @@ std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &
     case DictionaryType::RBTREE:
         return std::make_unique<RedBlackTree<Key, Value>>();
     case DictionaryType::CHAINING_HASH:
-        // Implementação de dicionário com encadeamento
+        return std::make_unique<ChainedHashTable<Key, Value>>();
     case DictionaryType::OPEN_ADDRESSING_HASH:
-        // Implementação de dicionário com endereçamento aberto
+        break; // Implementação de dicionário com endereçamento aberto
     default:
         throw std::invalid_argument("Tipo de dicionário desconhecido");
     }
@@ -82,9 +83,8 @@ std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &
     case DictionaryType::RBTREE:
         return std::make_unique<RedBlackTree<Key, Value>>(list);
     case DictionaryType::CHAINING_HASH:
-        // Implementação de dicionário com encadeamento
+        return std::make_unique<ChainedHashTable<Key, Value>>(list);
     case DictionaryType::OPEN_ADDRESSING_HASH:
-        // Implementação de dicionário com endereçamento aberto
     default:
         throw std::invalid_argument("Tipo de dicionário desconhecido");
     }
