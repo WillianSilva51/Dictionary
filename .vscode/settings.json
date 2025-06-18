@@ -110,5 +110,6 @@
         "ctgmath": "cpp",
         "filesystem": "cpp",
         "version": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

@@ -4,9 +4,9 @@
 #include <initializer_list>
 #include <stack>
 
-#include "RB_Tree/node/NodeRB.hpp"
-#include "RB_Tree/iteratorRB/IteratorRB.hpp"
-#include "Dictionary/Dictionary.hpp"
+#include "dictionary/rb_tree/NodeRB.hpp"
+#include "dictionary/rb_tree/IteratorRB.hpp"
+#include "dictionary/Dictionary.hpp"
 
 /**
  * @file RedBlackTree.hpp
@@ -256,6 +256,16 @@ public:
     RedBlackTree(std::initializer_list<std::pair<Key, Value>> list);
 
     /**
+     * @brief Cria uma cópia profunda da árvore Rubro-Negra.
+     *
+     * Retorna um ponteiro inteligente para uma nova instância da árvore,
+     * contendo os mesmos elementos que a árvore atual.
+     *
+     * @return std::unique_ptr<RedBlackTree<Key, Value>> Um ponteiro inteligente para a nova árvore.
+     */
+    std::unique_ptr<Dictionary<Key, Value>> clone() const;
+
+    /**
      * @brief Destrutor. Libera toda a memória alocada pelos nós da árvore.
      */
     ~RedBlackTree();
@@ -277,6 +287,24 @@ public:
      * @return iterator Um iterador para o final do conjunto.
      */
     iterator end() noexcept { return iterator(nil, nil); }
+
+    /**
+     * @brief Retorna um iterador constante para o início do conjunto.
+     *
+     * O iterador aponta para o menor elemento da árvore (travessia in-order).
+     *
+     * @return iterator Um iterador constante para o início do conjunto.
+     */
+    iterator begin() const noexcept { return iterator(root, nil); }
+
+    /**
+     * @brief Retorna um iterador constante para o final do conjunto.
+     *
+     * O iterador aponta para a posição após o último elemento (o nó sentinela `nil`).
+     *
+     * @return iterator Um iterador constante para o final do conjunto.
+     */
+    iterator end() const noexcept { return iterator(nil, nil); }
 
     /**
      * @brief Retorna um iterador constante para o início do conjunto.
@@ -445,6 +473,16 @@ public:
     void print() const;
 
     /**
+     * @brief Aplica uma função a cada par chave-valor no conjunto.
+     *
+     * Permite iterar sobre todos os elementos do conjunto e aplicar uma função
+     * personalizada a cada um deles.
+     *
+     * @param func A função a ser aplicada a cada par chave-valor.
+     */
+    void forEach(const std::function<void(const std::pair<Key, Value> &)> &func) const;
+
+    /**
      * @brief Exibe a estrutura da Árvore Rubro-Negra de forma visual no console.
      *
      * Útil para depuração e visualização da estrutura e cores dos nós.
@@ -474,6 +512,14 @@ template <typename Key, typename Value>
 RedBlackTree<Key, Value>::RedBlackTree(const RedBlackTree &other) : RedBlackTree()
 {
     insertUnion(*this, other.root);
+}
+
+template <typename Key, typename Value>
+std::unique_ptr<Dictionary<Key,
+                           Value>>
+RedBlackTree<Key, Value>::clone() const
+{
+    return std::make_unique<RedBlackTree<Key, Value>>(*this);
 }
 
 template <typename Key, typename Value>
@@ -1021,6 +1067,13 @@ void RedBlackTree<Key, Value>::printInOrder(NodePtr node) const
         std::cout << "(" << node->key.first << ", " << node->key.second << ")" << std::endl;
         printInOrder(node->right);
     }
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::forEach(const std::function<void(const std::pair<Key, Value> &)> &func) const
+{
+    for (const auto &pair : *this)
+        func(pair);
 }
 
 template <typename Key, typename Value>

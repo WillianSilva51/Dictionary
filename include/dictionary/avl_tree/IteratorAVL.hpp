@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AVL_Tree/node/Node.hpp"
+#include "dictionary/avl_tree/Node.hpp"
 #include <iterator>
 #include <stack>
 

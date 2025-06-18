@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RB_Tree/node/NodeRB.hpp"
+#include "dictionary/rb_tree/NodeRB.hpp"
 #include <iterator>
 #include <stack>
 

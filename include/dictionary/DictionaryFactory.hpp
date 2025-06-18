@@ -2,9 +2,8 @@
 
 #include <memory>
 
-#include <AVL_Tree/AVLTree.hpp>
-#include <RB_Tree/RedBlackTree.hpp>
-#include <Dictionary/DictionaryType.hpp>
+#include <dictionary/avl_tree/AVLTree.hpp>
+#include <dictionary/rb_tree/RedBlackTree.hpp>
 
 /**
  * @file DictionaryType.hpp
@@ -29,11 +28,11 @@ enum class DictionaryType
 
 /**
  * @brief Cria uma instância de um dicionário do tipo especificado.
- * 
+ *
  * Esta função atua como uma fábrica (factory) para criar diferentes implementações
  * de dicionários que herdam da classe base `Dictionary`. A implementação específica
  * é escolhida com base no valor do enumerador `DictionaryType` fornecido.
- * 
+ *
  * @tparam Key O tipo das chaves no dicionário.
  * @tparam Value O tipo dos valores associados às chaves.
  * @param type O tipo de dicionário a ser criado, conforme o enumerador `DictionaryType`.
@@ -41,7 +40,7 @@ enum class DictionaryType
  * @throws std::invalid_argument Lançada se o `type` fornecido for desconhecido ou ainda não implementado.
  */
 template <typename Key, typename Value>
-std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &type)
+std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &type = DictionaryType::RBTREE)
 {
     switch (type)
     {
@@ -49,6 +48,39 @@ std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &
         return std::make_unique<AVLTree<Key, Value>>();
     case DictionaryType::RBTREE:
         return std::make_unique<RedBlackTree<Key, Value>>();
+    case DictionaryType::CHAINING_HASH:
+        // Implementação de dicionário com encadeamento
+    case DictionaryType::OPEN_ADDRESSING_HASH:
+        // Implementação de dicionário com endereçamento aberto
+    default:
+        throw std::invalid_argument("Tipo de dicionário desconhecido");
+    }
+}
+
+/**
+ * @brief Cria uma instância de um dicionário do tipo especificado, inicializando-o com uma lista de pares chave-valor.
+ *
+ * Esta função atua como uma fábrica (factory) para criar diferentes implementações
+ * de dicionários que herdam da classe base `Dictionary`, inicializando-os com os valores fornecidos.
+ * A implementação específica é escolhida com base no valor do enumerador `DictionaryType` fornecido.
+ *
+ * @tparam Key O tipo das chaves no dicionário.
+ * @tparam Value O tipo dos valores associados às chaves.
+ * @param type O tipo de dicionário a ser criado, conforme o enumerador `DictionaryType`.
+ * @param list Uma lista de pares chave-valor para inicializar o dicionário.
+ * @return Um `std::unique_ptr` para a nova instância do dicionário.
+ * @throws std::invalid_argument Lançada se o `type` fornecido for desconhecido ou ainda não implementado.
+ */
+template <typename Key, typename Value>
+std::unique_ptr<Dictionary<Key, Value>> create_dictionary(const DictionaryType &type,
+                                                          const std::initializer_list<std::pair<Key, Value>> &list)
+{
+    switch (type)
+    {
+    case DictionaryType::AVL:
+        return std::make_unique<AVLTree<Key, Value>>(list);
+    case DictionaryType::RBTREE:
+        return std::make_unique<RedBlackTree<Key, Value>>(list);
     case DictionaryType::CHAINING_HASH:
         // Implementação de dicionário com encadeamento
     case DictionaryType::OPEN_ADDRESSING_HASH:

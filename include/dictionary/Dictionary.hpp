@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <functional>
+
 /**
  * @brief Define a interface para uma estrutura de dados de dicionário (ou mapa).
  *
@@ -35,4 +38,9 @@ public:
     virtual bool empty() const noexcept = 0;
 
     virtual void print() const = 0;
+
+    virtual void forEach(const std::function<void(const std::pair<Key, Value> &)> &func) const = 0;
+
+    virtual std::unique_ptr<Dictionary<Key, Value>>
+    clone() const = 0;
 };

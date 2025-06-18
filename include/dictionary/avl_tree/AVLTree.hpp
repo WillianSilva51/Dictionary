@@ -4,9 +4,9 @@
 #include <initializer_list>
 #include <stack>
 
-#include "AVL_Tree/node/Node.hpp"
-#include "AVL_Tree/iteratorAVL/IteratorAVL.hpp"
-#include "Dictionary/Dictionary.hpp"
+#include "dictionary/avl_tree/Node.hpp"
+#include "dictionary/avl_tree/IteratorAVL.hpp"
+#include "dictionary/Dictionary.hpp"
 
 /**
  * @file AVLTree.hpp
@@ -278,6 +278,16 @@ public:
     AVLTree(std::initializer_list<std::pair<Key, Value>> list);
 
     /**
+     * @brief Cria uma cópia profunda da árvore AVL.
+     *
+     * Retorna um ponteiro inteligente para uma nova instância da árvore AVL
+     * que contém os mesmos elementos que a árvore atual.
+     *
+     * @return std::unique_ptr<AVLTree<Key, Value>> Um ponteiro inteligente para a nova árvore AVL.
+     */
+    std::unique_ptr<Dictionary<Key, Value>> clone() const;
+
+    /**
      * @brief Destrutor. Libera toda a memória alocada pelos nós da árvore.
      */
     ~AVLTree();
@@ -299,6 +309,24 @@ public:
      * @return IteratorAVL<Key, Value> Um iterador para o final do conjunto.
      */
     iterator end() noexcept { return iterator(); }
+
+    /**
+     * @brief Retorna um iterador constante para o início do conjunto.
+     *
+     * O iterador aponta para o menor elemento da árvore (in-order traversal).
+     *
+     * @return IteratorAVL<Key, Value> Um iterador constante para o início do conjunto.
+     */
+    iterator begin() const noexcept { return iterator(root); }
+
+    /**
+     * @brief Retorna um iterador constante para o início do conjunto.
+     *
+     * O iterador aponta para o menor elemento da árvore (in-order traversal).
+     *
+     * @return IteratorAVL<Key, Value> Um iterador constante para o início do conjunto.
+     */
+    iterator end() const noexcept { return iterator(); }
 
     /**
      * @brief Retorna um iterador constante para o início do conjunto.
@@ -464,6 +492,16 @@ public:
     void print() const;
 
     /**
+     * @brief Aplica uma função a cada par chave-valor no conjunto.
+     *
+     * Permite iterar sobre todos os elementos do conjunto e aplicar uma função
+     * personalizada a cada um deles.
+     *
+     * @param func A função a ser aplicada a cada par chave-valor.
+     */
+    void forEach(const std::function<void(const std::pair<Key, Value> &)> &func) const;
+
+    /**
      * @brief Exibe a estrutura da árvore AVL de forma visual no console.
      *
      * Útil para depuração e visualização do balanceamento da árvore.
@@ -484,6 +522,12 @@ template <typename Key, typename Value>
 AVLTree<Key, Value>::AVLTree(const AVLTree &other) : AVLTree()
 {
     insertUnion(*this, other.root);
+}
+
+template <typename Key, typename Value>
+std::unique_ptr<Dictionary<Key, Value>> AVLTree<Key, Value>::clone() const
+{
+    return make_unique<AVLTree<Key, Value>>(*this);
 }
 
 template <typename Key, typename Value>
@@ -887,6 +931,13 @@ void AVLTree<Key, Value>::printInOrder(NodePtr node) const
         std::cout << "(" << node->key.first << ", " << node->key.second << ")" << std::endl;
         printInOrder(node->right);
     }
+}
+
+template <typename Key, typename Value>
+void AVLTree<Key, Value>::forEach(const std::function<void(const std::pair<Key, Value> &)> &func) const
+{
+    for (const auto &key : *this)
+        func(key);
 }
 
 template <typename Key, typename Value>
