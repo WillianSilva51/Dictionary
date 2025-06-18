@@ -16,10 +16,8 @@ jobs:
       # Passo 1: Checkout do código do seu repositório
       - name: Checkout repository
         uses: actions/checkout@v4
-        # Se o Google Test estivesse como submódulo, você adicionaria:
-        # with:
-        #   submodules: 'recursive'
-        # Mas como está na pasta 'lib/', o checkout normal é suficiente.
+        with: 
+            submodules: 'recursive'
 
       # Passo 2: Compilar e executar os testes usando o Makefile
       # O target "test" no seu Makefile já compila o necessário (incluindo GTest) e depois executa.
