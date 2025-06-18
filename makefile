@@ -58,9 +58,9 @@ OUTPUT_NAME = $(notdir $(CURDIR))
 OUTPUT = $(OUTPUT_DIR)/$(OUTPUT_NAME)$(EXT)
 
 # Diretórios de inclusão e bibliotecas
-INCLUDE_DIRS = include
+INCLUDE_DIRS = include lib/googletest/googletest/include lib/googletest/googletest
 INCLUDES = $(patsubst %,-I%, $(INCLUDE_DIRS))
-LIB_DIRS = lib lib/googletest/googletest/include lib/googletest/googletest
+LIB_DIRS = lib 
 LIBS = $(patsubst %,-L%, $(LIB_DIRS))
 
 # Encontra todos os arquivos .cpp (incluindo subdiretórios) (/*.cpp para apenas o diretório atual)

@@ -598,23 +598,19 @@ Node<Key, Value> *AVLTree<Key, Value>::fixup_node(NodePtr p)
 
     if (bal == -2 and height(p->left->left) > height(p->left->right))
     {
-        rotations++;
         return rightRotation(p);
     }
     else if (bal == -2 and height(p->left->left) < height(p->left->right))
     {
-        rotations++;
         p->left = leftRotation(p->left);
         return rightRotation(p);
     }
     else if (bal == 2 and height(p->right->right) > height(p->right->left))
     {
-        rotations++;
         return leftRotation(p);
     }
     else if (bal == 2 and height(p->right->right) < height(p->right->left))
     {
-        rotations++;
         p->right = rightRotation(p->right);
         return leftRotation(p);
     }
@@ -665,23 +661,19 @@ Node<Key, Value> *AVLTree<Key, Value>::fixup_deletion(NodePtr p)
 
     if (bal == 2 and balance(p->right) >= 0)
     {
-        rotations++;
         return leftRotation(p);
     }
     if (bal == 2 and balance(p->right) < 0)
     {
-        rotations++;
         p->right = rightRotation(p->right);
         return leftRotation(p);
     }
     if (bal == -2 and balance(p->left) <= 0)
     {
-        rotations++;
         return rightRotation(p);
     }
     if (bal == -2 and balance(p->left) > 0)
     {
-        rotations++;
         p->left = leftRotation(p->left);
         return rightRotation(p);
     }
@@ -707,6 +699,8 @@ Node<Key, Value> *AVLTree<Key, Value>::m_remove(NodePtr p, const Key &key)
     }
     else if (p->right == nullptr)
     {
+        comparisons++;
+
         NodePtr child = p->left;
         delete p;
         size_m--;
@@ -802,8 +796,10 @@ Node<Key, Value> *AVLTree<Key, Value>::update(NodePtr p, const std::pair<Key, Va
         p->left = update(p->left, key);
     }
     else
+    {
+        comparisons++;
         p->right = update(p->right, key);
-
+    }
     p = fixup_node(p);
 
     return p;
@@ -830,6 +826,8 @@ int AVLTree<Key, Value>::balance(NodePtr node)
 template <typename Key, typename Value>
 Node<Key, Value> *AVLTree<Key, Value>::rightRotation(NodePtr p)
 {
+    rotations++;
+
     NodePtr aux = p->left;
     p->left = aux->right;
     aux->right = p;
@@ -843,6 +841,8 @@ Node<Key, Value> *AVLTree<Key, Value>::rightRotation(NodePtr p)
 template <typename Key, typename Value>
 Node<Key, Value> *AVLTree<Key, Value>::leftRotation(NodePtr p)
 {
+    rotations++;
+
     NodePtr aux = p->right;
     p->right = aux->left;
     aux->left = p;
@@ -928,7 +928,7 @@ void AVLTree<Key, Value>::printInOrder(NodePtr node) const
     else
     {
         printInOrder(node->left);
-        std::cout << "(" << node->key.first << ", " << node->key.second << ")" << std::endl;
+        std::cout << "[" << node->key.first << ", " << node->key.second << "]" << std::endl;
         printInOrder(node->right);
     }
 }
@@ -964,7 +964,7 @@ void AVLTree<Key, Value>::bshow(NodePtr node, std::string heranca)
         return;
     }
 
-    std::cout << "(" << node->key.first << ", " << node->key.second << ")" << std::endl;
+    std::cout << "[" << node->key.first << ", " << node->key.second << "]" << std::endl;
 
     if (node != nullptr and (node->left != nullptr or node->right != nullptr))
         bshow(node->left, heranca + "l");

@@ -605,13 +605,11 @@ void RedBlackTree<Key, Value>::fixup_node(NodePtr p)
                 if (p == p->parent->right)
                 {
                     p = p->parent;
-                    rotations++;
                     leftRotation(p);
                 }
 
                 p->parent->color = NodeRB<Key, Value>::BLACK;
                 p->parent->parent->color = NodeRB<Key, Value>::RED;
-                rotations++;
                 rightRotation(p->parent->parent);
             }
         }
@@ -631,13 +629,11 @@ void RedBlackTree<Key, Value>::fixup_node(NodePtr p)
                 if (p == p->parent->left)
                 {
                     p = p->parent;
-                    rotations++;
                     rightRotation(p);
                 }
 
                 p->parent->color = NodeRB<Key, Value>::BLACK;
                 p->parent->parent->color = NodeRB<Key, Value>::RED;
-                rotations++;
                 leftRotation(p->parent->parent);
             }
         }
@@ -664,7 +660,10 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::insert(NodePtr p, const NodePtr ke
             aux = aux->right;
         }
         else
+        {
+            comparisons++;
             return p; // A chave já existe, não insere novamente
+        }
     }
     size_m++;
 
@@ -1064,7 +1063,7 @@ void RedBlackTree<Key, Value>::printInOrder(NodePtr node) const
     else
     {
         printInOrder(node->left);
-        std::cout << "(" << node->key.first << ", " << node->key.second << ")" << std::endl;
+        std::cout << "[" << node->key.first << ", " << node->key.second << "]" << std::endl;
         printInOrder(node->right);
     }
 }
@@ -1100,7 +1099,7 @@ void RedBlackTree<Key, Value>::bshow(NodePtr node, std::string heranca)
         return;
     }
 
-    std::cout << (node->color == NodeRB<Key, Value>::RED ? "\x1b[31m" : "\x1b[30m") << "(" << node->key.first << ", " << node->key.second << ")"
+    std::cout << (node->color == NodeRB<Key, Value>::RED ? "\x1b[31m" : "\x1b[30m") << "[" << node->key.first << ", " << node->key.second << "]"
               << "\x1b[0m" << std::endl;
 
     if (node != nil and (node->left != nil or node->right != nil))

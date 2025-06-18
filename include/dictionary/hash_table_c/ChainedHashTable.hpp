@@ -47,6 +47,8 @@ private:
     // referencia para a funcao de codificacao
     Hash m_hashing;
 
+    long long comparisons{0}; // contador de comparações para análise de desempenho
+
     /**
      * @brief Calcula o menor número primo que é maior ou igual a um dado número.
      *
@@ -97,6 +99,16 @@ public:
      * @return std::unique_ptr<Dictionary<Key, Value>> Um ponteiro para a nova instância clonada.
      */
     std::unique_ptr<Dictionary<Key, Value>> clone() const;
+
+    /**
+     * @brief Retorna o número de comparações realizadas durante as operações.
+     *
+     * Este método é útil para análise de desempenho, permitindo verificar quantas
+     * comparações foram feitas ao longo das operações de inserção, busca e remoção.
+     *
+     * @return long long O número total de comparações realizadas.
+     */
+    long long getComparisons() const noexcept { return comparisons; }
 
     /**
      * @brief Retorna o número de pares chave-valor na tabela.
@@ -416,8 +428,11 @@ void ChainedHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key
     size_t hash_index = hash_code(key_value.first);
 
     for (const auto &pair : m_table[hash_index])
+    {
+        comparisons++;
         if (pair.first == key_value.first)
             return; // chave ja existe, nao adiciona
+    }
 
     m_table[hash_index].push_back(key_value);
     m_number_of_elements++;
@@ -429,20 +444,25 @@ void ChainedHashTable<Key, Value, Hash>::update(const std::pair<Key, Value> &key
     size_t hash_index = hash_code(key_value.first);
 
     for (auto &pair : m_table[hash_index])
+    {
+        comparisons++;
         if (pair.first == key_value.first)
         {
             pair.second = key_value.second; // atualiza o valor associado a chave
             return;
         }
+    }
 }
 
 template <typename Key, typename Value, typename Hash>
 bool ChainedHashTable<Key, Value, Hash>::contains(const Key &k)
 {
     for (auto &i : m_table[hash_code(k)])
+    {
+        comparisons++;
         if (i.first == k)
             return true;
-
+    }
     return false;
 }
 
@@ -453,6 +473,7 @@ Value &ChainedHashTable<Key, Value, Hash>::at(const Key &k)
 
     for (auto &pair : m_table[hash_index])
     {
+        comparisons++;
         if (pair.first == k)
             return pair.second; // retorna o valor associado a chave
     }
@@ -538,6 +559,7 @@ Value &ChainedHashTable<Key, Value, Hash>::operator[](const Key &k)
 
     for (auto &pair : m_table[slot])
     {
+        comparisons++;
         if (pair.first == k)
             return pair.second; // retorna o valor associado a chave
     }

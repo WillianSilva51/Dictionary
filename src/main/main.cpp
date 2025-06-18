@@ -4,9 +4,18 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    auto tree = create_dictionary<string, int>(DictionaryType::RBTREE, {{"Alice", 25}, {"Bob", 30}, {"Charlie", 35}, {"David", 40}, {"Eve", 45}, {"Frank", 50}, {"Grace", 55}});
+    std::unique_ptr<Dictionary<string, int>> tree = create_dictionary<string, int>(DictionaryType::RBTREE, {{"Alice", 25}, {"Bob", 30}, {"Charlie", 35}, {"David", 40}, {"Eve", 45}, {"Frank", 50}, {"Grace", 55}});
+
+    RedBlackTree<string, int> *rb_tree = dynamic_cast<RedBlackTree<string, int> *>(tree.get());
+    if (rb_tree)
+    {
+        cout << "Comparisons: " << rb_tree->getComparisons() << endl
+             << "Rotations: " << rb_tree->getRotations() << endl;
+
+        rb_tree->bshow();
+    }
 
     tree->print();
     cout << endl;
