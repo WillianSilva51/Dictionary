@@ -49,8 +49,8 @@ endif
 
 # Diretórios para código-fonte, objetos e saída
 SRC_DIRS = src
-OBJ_DIR = objects
-OUTPUT_DIR = bin
+BUILD_DIR = build
+OUTPUT_DIR = build/bin
 TESTS_DIR = tests
 
 # Definir o nome do executável
@@ -60,13 +60,13 @@ OUTPUT = $(OUTPUT_DIR)/$(OUTPUT_NAME)$(EXT)
 # Diretórios de inclusão e bibliotecas
 INCLUDE_DIRS = include lib/googletest/googletest/include lib/googletest/googletest
 INCLUDES = $(patsubst %,-I%, $(INCLUDE_DIRS))
-LIB_DIRS = lib 
+LIB_DIRS = lib
 LIBS = $(patsubst %,-L%, $(LIB_DIRS))
 
 # Encontra todos os arquivos .cpp (incluindo subdiretórios) (/*.cpp para apenas o diretório atual)
 SOURCES := $(wildcard $(SRC_DIRS)/**/*.cpp)
 # Cria lista de objetos a partir dos fontes
-OBJECTS := $(patsubst $(SRC_DIRS)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
+OBJECTS := $(patsubst $(SRC_DIRS)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
 # Arquivos de dependência gerados
 DEPS    := $(OBJECTS:.o=.d)
 
@@ -88,13 +88,13 @@ $(OUTPUT): $(OBJECTS) | $(OUTPUT_DIR)
 #===============================================================================
 # REGRA PARA CRIAR OS DIRETÓRIOS (usando o comando específico de cada SO)
 #===============================================================================
-$(OUTPUT_DIR) $(OBJ_DIR):
+$(OUTPUT_DIR) $(BUILD_DIR):
 	@$(CommandCreate)
 
 #===============================================================================
 # REGRA PARA COMPILAR OS ARQUIVOS .cpp
 #===============================================================================
-$(OBJ_DIR)/%.o: $(SRC_DIRS)/%.cpp | $(OBJ_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIRS)/%.cpp | $(BUILD_DIR)
 	@$(OBJ_MKDIR)
 	@echo "Compilando $<..."
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
@@ -113,18 +113,18 @@ $(OBJ_DIR)/%.o: $(SRC_DIRS)/%.cpp | $(OBJ_DIR)
 clean:
 	@echo "Deletando arquivos objeto..."
 ifeq ($(OS),Windows_NT)
-	@if exist "$(OBJ_DIR)\*.o" (del "$(OBJ_DIR)\*.o")
+	@if exist "$(BUILD_DIR)\*.o" (del "$(BUILD_DIR)\*.o")
 	@echo "Deletando arquivos de dependencia..."
-	@if exist "$(OBJ_DIR)\*.d" (del "$(OBJ_DIR)\*.d")
+	@if exist "$(BUILD_DIR)\*.d" (del "$(BUILD_DIR)\*.d")
 	@echo "Deletando a pasta $(OUTPUT_DIR)..."
 	@if exist "$(OUTPUT_DIR)" ($(RM) "$(OUTPUT_DIR)")
-	@echo "Deletando a pasta $(OBJ_DIR)..."
-	@if exist "$(OBJ_DIR)" ($(RM) "$(OBJ_DIR)")
+	@echo "Deletando a pasta $(BUILD_DIR)..."
+	@if exist "$(BUILD_DIR)" ($(RM) "$(BUILD_DIR)")
 else
-	@$(RM) $(OBJ_DIR)/*.o $(OBJ_DIR)/*.d
+	@$(RM) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d
 	@echo "Deletando arquivos de dependencia e objetos..."
-	@$(RM) -r $(OBJ_DIR) $(OUTPUT_DIR)
-	@echo "Deletando a pasta $(OBJ_DIR) e $(OUTPUT_DIR)..."
+	@$(RM) -r $(BUILD_DIR) $(OUTPUT_DIR)
+	@echo "Deletando a pasta $(BUILD_DIR) e $(OUTPUT_DIR)..."
 endif
 	@echo "Limpeza concluida com sucesso!"
 

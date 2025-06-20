@@ -41,3 +41,26 @@ TEST(DictionaryTests, HashTable)
     hashTable.remove(2);
     EXPECT_THROW(hashTable.at(2), std::out_of_range);
 }
+
+TEST(DictionaryTests, HashTableRehash)
+{
+    ChainedHashTable<int, std::string> hashTable(2, 0.75f);
+    hashTable.insert({1, "one"});
+    hashTable.insert({2, "two"}); // This should trigger a rehash
+
+    EXPECT_EQ(hashTable.size(), 2);
+    EXPECT_EQ(hashTable.at(1), "one");
+    EXPECT_EQ(hashTable.at(2), "two");
+}
+
+TEST(DictionaryTests, RedBlackTreeInsertAndFind)
+{
+    RedBlackTree<int, std::string> tree;
+    tree.insert({1, "one"});
+    tree.insert({2, "two"});
+    tree.insert({3, "three"});
+
+    EXPECT_EQ(tree.at(1), "one");
+    EXPECT_EQ(tree.at(2), "two");
+    EXPECT_EQ(tree.at(3), "three");
+}

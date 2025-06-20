@@ -82,7 +82,7 @@ public:
      *                  Será ajustado para o próximo número primo maior ou igual.
      * @param load_factor O fator de carga máximo permitido antes de um rehash.
      */
-    ChainedHashTable(const size_t &tableSize = 19, const float &load_factor = 0.75f);
+    ChainedHashTable(const size_t &tableSize = 19, const float &load_factor = 1.0f);
 
     /**
      * @brief Construtor que inicializa a tabela com uma lista de elementos.
@@ -91,7 +91,7 @@ public:
      * @param tableSize O número inicial de "buckets" na tabela.
      * @param load_factor O fator de carga máximo.
      */
-    ChainedHashTable(const std::initializer_list<std::pair<Key, Value>> &list, const size_t &tableSize = 19, const float &load_factor = 0.75f);
+    ChainedHashTable(const std::initializer_list<std::pair<Key, Value>> &list, const size_t &tableSize = 19, const float &load_factor = 1.0f);
 
     /**
      * @brief Cria e retorna uma cópia profunda (deep copy) da tabela hash.
@@ -423,7 +423,7 @@ template <typename Key, typename Value, typename Hash>
 void ChainedHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key_value)
 {
     if (load_factor() >= m_max_load_factor)
-        rehash(get_next_prime(m_table_size * 2));
+        rehash(m_table_size * 2);
 
     size_t hash_index = hash_code(key_value.first);
 
@@ -518,16 +518,16 @@ void ChainedHashTable<Key, Value, Hash>::rehash(size_t m)
 template <typename Key, typename Value, typename Hash>
 void ChainedHashTable<Key, Value, Hash>::remove(const Key &k)
 {
-    if (contains(k))
+    size_t slot = hash_code(k); // calcula o slot em que estaria a chave
+    for (auto it = m_table[slot].begin(); it != m_table[slot].end(); ++it)
     {
-        size_t slot = hash_code(k);
-
-        m_table[slot].remove_if([&k](const std::pair<Key, Value> &pair)
-                                {
-                                    return pair.first == k; // remove o par com a chave k
-                                });
-
-        m_number_of_elements--;
+        comparisons++;
+        if (it->first == k)
+        {
+            m_table[slot].erase(it); // se encontrar, deleta
+            m_number_of_elements--;
+            return; // sai da funcao apos remover
+        }
     }
 }
 
