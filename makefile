@@ -6,8 +6,8 @@
 CXX = g++
 
 # Opções de compilação para debug e release
-CXXFLAGS_DEBUG = -std=c++20 -Wall -Wextra -g -O0 -I lib
-CXXFLAGS_RELEASE = -std=c++20 -Wall -Wextra -O3 -DNDEBUG -I lib
+CXXFLAGS_DEBUG = -std=c++20 -Wall -Wextra -g -O0 -MMD -MP -I lib
+CXXFLAGS_RELEASE = -std=c++20 -Wall -Wextra -O3 -DNDEBUG -MMD -MP -I lib
 
 # Modo de compilação (debug ou release)
 MODE ?= debug

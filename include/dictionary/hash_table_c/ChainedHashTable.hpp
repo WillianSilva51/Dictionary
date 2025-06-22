@@ -452,6 +452,8 @@ void ChainedHashTable<Key, Value, Hash>::update(const std::pair<Key, Value> &key
             return;
         }
     }
+
+    throw std::out_of_range("Key not found in the hash table");
 }
 
 template <typename Key, typename Value, typename Hash>

@@ -203,15 +203,15 @@ private:
     bool contains(NodePtr root, const Key &key);
 
     /**
-     * @brief Insere todos os elementos da subárvore com raiz em `node` no conjunto `result`.
+     * @brief Retorna um novo conjunto que é a união deste conjunto com `other`.
      *
-     * Função auxiliar usada para a operação de União de conjuntos.
-     * Percorre a subárvore `node` e insere cada elemento em `result`.
+     * A união contém todos os elementos que estão em `this` ou em `other` (ou em ambos).
+     * Se uma chave existir em ambos, o valor de `this` é preservado.
      *
-     * @param result O conjunto onde os elementos serão inseridos.
-     * @param node O nó raiz da subárvore cujos elementos serão inseridos.
+     * @param other O outro conjunto.
+     * @return RedBlackTree<Key, Value> Um novo conjunto resultado da união.
      */
-    void insertUnion(RedBlackTree<Key, Value> &result, const NodePtr &node) const;
+    NodeRB<Key, Value> *clone_recursive(const NodePtr parent_new, const NodePtr node_other, const NodePtr nil_other) const;
 
     /**
      * @brief Função auxiliar recursiva para imprimir os elementos em ordem (in-order).
@@ -454,17 +454,6 @@ public:
      */
     bool contains(const Key &key);
 
-    /**
-     * @brief Retorna um novo conjunto que é a união deste conjunto com `other`.
-     *
-     * A união contém todos os elementos que estão em `this` ou em `other` (ou em ambos).
-     * Se uma chave existir em ambos, o valor de `this` é preservado.
-     *
-     * @param other O outro conjunto.
-     * @return RedBlackTree<Key, Value> Um novo conjunto resultado da união.
-     */
-    RedBlackTree Union(const RedBlackTree &other) const;
-
     // Funções de impressão
 
     /**
@@ -511,7 +500,13 @@ RedBlackTree<Key, Value>::RedBlackTree(std::initializer_list<std::pair<Key, Valu
 template <typename Key, typename Value>
 RedBlackTree<Key, Value>::RedBlackTree(const RedBlackTree &other) : RedBlackTree()
 {
-    insertUnion(*this, other.root);
+    if (other.root != other.nil)
+    {
+        root = clone_recursive(nil, other.root, other.nil);
+        size_m = other.size_m;
+        comparisons = other.comparisons;
+        rotations = other.rotations;
+    }
 }
 
 template <typename Key, typename Value>
@@ -536,7 +531,10 @@ void RedBlackTree<Key, Value>::operator=(const RedBlackTree &other)
     if (this != &other)
     {
         clear();
-        insertUnion(*this, other.root);
+        clone_recursive(nil, other.root, other.nil);
+        size_m = other.size_m;
+        comparisons = other.comparisons;
+        rotations = other.rotations;
     }
 }
 
@@ -911,10 +909,7 @@ template <typename Key, typename Value>
 void RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<Key, Value> &key)
 {
     if (p == nil)
-    {
-        insert(key); // Se o nó não existir, insere a chave
-        return;
-    }
+        throw std::out_of_range("Key not found in the Red-Black Tree for update");
 
     comparisons++;
     if (key.first == p->key.first)
@@ -928,8 +923,6 @@ void RedBlackTree<Key, Value>::update(NodePtr p, const std::pair<Key, Value> &ke
     }
     else
         update(p->right, key);
-
-    fixup_node(p);
 }
 
 template <typename Key, typename Value>
@@ -989,38 +982,21 @@ void RedBlackTree<Key, Value>::leftRotation(NodePtr p)
 }
 
 template <typename Key, typename Value>
-void RedBlackTree<Key, Value>::insertUnion(RedBlackTree<Key, Value> &result, const NodePtr &node) const
+NodeRB<Key, Value> *RedBlackTree<Key, Value>::clone_recursive(const NodePtr parent_new, const NodePtr node_other, const NodePtr nil_other) const
 {
-    if (node == nil)
-        return;
-
-    std::stack<NodePtr> nodes;
-    nodes.push(node);
-
-    while (!nodes.empty())
+    if (node_other == nil_other)
     {
-        NodePtr atual = nodes.top();
-        nodes.pop();
-
-        result.insert(atual->key);
-
-        if (atual->left != nil)
-            nodes.push(atual->left);
-
-        if (atual->right != nil)
-            nodes.push(atual->right);
+        return nil; // Retorna o sentinela da NOVA árvore
     }
-}
 
-template <typename Key, typename Value>
-RedBlackTree<Key, Value> RedBlackTree<Key, Value>::Union(const RedBlackTree<Key, Value> &other) const
-{
-    RedBlackTree<Key, Value> result;
+    // Cria o novo nó com os mesmos dados e cor
+    NodePtr new_node = new NodeRB<Key, Value>(node_other->key, node_other->color, parent_new, nil, nil);
 
-    insertUnion(result, root);
-    insertUnion(result, other.root);
+    // Define recursivamente os filhos esquerdo e direito
+    new_node->left = clone_recursive(new_node, node_other->left, nil_other);
+    new_node->right = clone_recursive(new_node, node_other->right, nil_other);
 
-    return result;
+    return new_node;
 }
 
 template <typename Key, typename Value>

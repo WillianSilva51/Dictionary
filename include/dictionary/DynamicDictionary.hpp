@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <dictionary/DictionaryFactory.hpp>
+#include "dictionary/DictionaryFactory.hpp"
 
 /**
  * @class DynamicDictionary

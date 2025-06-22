@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include <dictionary/avl_tree/AVLTree.hpp>
-#include <dictionary/rb_tree/RedBlackTree.hpp>
-#include <dictionary/hash_table_c/ChainedHashTable.hpp>
+#include "dictionary/avl_tree/AVLTree.hpp"
+#include "dictionary/rb_tree/RedBlackTree.hpp"
+#include "dictionary/hash_table_c/ChainedHashTable.hpp"
 
 /**
  * @file DictionaryType.hpp

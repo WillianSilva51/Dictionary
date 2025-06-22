@@ -228,15 +228,17 @@ private:
     bool contains(NodePtr root, const Key &key);
 
     /**
-     * @brief Insere todos os elementos da subárvore rooted em `node` no conjunto `result`.
+     * @brief Clona recursivamente uma subárvore.
      *
-     * Função auxiliar usada para a operação de União de conjuntos.
-     * Percorre a subárvore `node` e insere cada elemento em `result`.
+     * Esta é uma função auxiliar que realiza uma cópia profunda de uma subárvore
+     * a partir do nó fornecido. É usada pelo construtor de cópia e pelo
+     * operador de atribuição de cópia para criar uma cópia idêntica, mas separada,
+     * da estrutura da árvore.
      *
-     * @param result O conjunto onde os elementos serão inseridos.
-     * @param node O nó raiz da subárvore cujos elementos serão inseridos.
+     * @param node_other Uma referência constante para o ponteiro do nó raiz da subárvore a ser clonada.
+     * @return NodePtr Um ponteiro para a raiz da subárvore recém-criada (clonada).
      */
-    void insertUnion(AVLTree<Key, Value> &result, const NodePtr &node) const;
+    NodePtr clone_recursive(const NodePtr &node_other) const;
 
     /**
      * @brief Função auxiliar recursiva para imprimir os elementos em ordem (in-order).
@@ -443,6 +445,8 @@ public:
      * A árvore é balanceada após a atualização, se necessário.
      *
      * @param key O par chave-valor a ser atualizado ou inserido.
+     *
+     * @throw std::out_of_range Se a chave não existir.
      */
     void update(const std::pair<Key, Value> &key) { root = update(root, key); };
 
@@ -473,16 +477,6 @@ public:
      * @return false Caso contrário.
      */
     bool contains(const Key &key);
-
-    /**
-     * @brief Retorna um novo conjunto que é a união deste conjunto com `other`.
-     *
-     * A união contém todos os elementos que estão em `this` ou em `other` (ou em ambos).
-     *
-     * @param other O outro conjunto.
-     * @return AVLTree<Key, Value> Um novo conjunto resultado da união.
-     */
-    AVLTree Union(const AVLTree &other) const;
 
     // Funções de impressão
 
@@ -521,7 +515,13 @@ AVLTree<Key, Value>::AVLTree(std::initializer_list<std::pair<Key, Value>> list) 
 template <typename Key, typename Value>
 AVLTree<Key, Value>::AVLTree(const AVLTree &other) : AVLTree()
 {
-    insertUnion(*this, other.root);
+    if (other.root != nullptr)
+    {
+        root = clone_recursive(other.root);
+        size_m = other.size_m;
+        comparisons = other.comparisons;
+        rotations = other.rotations;
+    }
 }
 
 template <typename Key, typename Value>
@@ -541,8 +541,14 @@ void AVLTree<Key, Value>::operator=(const AVLTree &other)
 {
     if (this != &other)
     {
-        clear();
-        insertUnion(*this, other.root);
+        clear(); // Limpa a árvore atual
+        if (other.root != nullptr)
+        {
+            root = clone_recursive(other.root);
+            size_m = other.size_m;
+            comparisons = other.comparisons;
+            rotations = other.rotations;
+        }
     }
 }
 
@@ -780,8 +786,7 @@ Node<Key, Value> *AVLTree<Key, Value>::update(NodePtr p, const std::pair<Key, Va
 {
     if (p == nullptr)
     {
-        size_m++;
-        return new Node<Key, Value>(key);
+        throw std::out_of_range("Key not found in AVL Tree");
     }
 
     comparisons++;
@@ -854,38 +859,20 @@ Node<Key, Value> *AVLTree<Key, Value>::leftRotation(NodePtr p)
 }
 
 template <typename Key, typename Value>
-void AVLTree<Key, Value>::insertUnion(AVLTree<Key, Value> &result, const NodePtr &node) const
+Node<Key, Value> *AVLTree<Key, Value>::clone_recursive(const NodePtr &node_other) const
 {
-    if (node == nullptr)
-        return;
+    if (node_other == nullptr)
+        return nullptr;
 
-    std::stack<NodePtr> nodes;
-    nodes.push(node);
+    // Cria o novo nó com os mesmos dados e altura
+    NodePtr new_node = new Node<Key, Value>(node_other->key);
+    new_node->height = node_other->height;
 
-    while (!nodes.empty())
-    {
-        NodePtr atual = nodes.top();
-        nodes.pop();
+    // Define recursivamente os filhos esquerdo e direito
+    new_node->left = clone_recursive(node_other->left);
+    new_node->right = clone_recursive(node_other->right);
 
-        result.insert(atual->key);
-
-        if (atual->left != nullptr)
-            nodes.push(atual->left);
-
-        if (atual->right != nullptr)
-            nodes.push(atual->right);
-    }
-}
-
-template <typename Key, typename Value>
-AVLTree<Key, Value> AVLTree<Key, Value>::Union(const AVLTree<Key, Value> &other) const
-{
-    AVLTree<Key, Value> result;
-
-    insertUnion(result, root);
-    insertUnion(result, other.root);
-
-    return result;
+    return new_node;
 }
 
 template <typename Key, typename Value>
