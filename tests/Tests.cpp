@@ -3,6 +3,8 @@
 #include "dictionary/avl_tree/AVLTree.hpp"
 #include "dictionary/rb_tree/RedBlackTree.hpp"
 #include "dictionary/hash_table_c/ChainedHashTable.hpp"
+#include "dictionary/hash_table_o/OpenHashTable.hpp"
+
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -220,7 +222,8 @@ REGISTER_TYPED_TEST_SUITE_P(DictionaryTest,
 using Implementations = ::testing::Types<
     AVLTree<int, std::string>,
     RedBlackTree<int, std::string>,
-    ChainedHashTable<int, std::string>>;
+    ChainedHashTable<int, std::string>,
+    OpenHashTable<int, std::string>>;
 
 // Instancia a suíte de testes para cada uma das implementações
 INSTANTIATE_TYPED_TEST_SUITE_P(MyImplementations, DictionaryTest, Implementations);
