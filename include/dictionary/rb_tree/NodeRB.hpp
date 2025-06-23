@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 /**
  * @brief Estrutura que representa um nó em uma Árvore Rubro-Negra (Red-Black Tree).
  *

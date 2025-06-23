@@ -1,6 +1,8 @@
 #pragma once
 
-enum class HashTableStatus
+#include <utility>
+
+enum class HashTableStatus : char
 {
     EMPTY,
     ACTIVE,
@@ -34,5 +36,5 @@ struct Slot
     bool is_deleted() const noexcept
     {
         return status == HashTableStatus::DELETED;
-    }
+    }    
 };

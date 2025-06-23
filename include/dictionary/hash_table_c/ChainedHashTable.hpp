@@ -49,6 +49,8 @@ private:
 
     long long comparisons{0}; // contador de comparações para análise de desempenho
 
+    long long collisions{0}; // contador de colisões para análise de desempenho
+
     /**
      * @brief Calcula o menor número primo que é maior ou igual a um dado número.
      *
@@ -109,6 +111,16 @@ public:
      * @return long long O número total de comparações realizadas.
      */
     long long getComparisons() const noexcept { return comparisons; }
+
+    /**
+     * @brief Retorna o número de colisões ocorridas durante as operações.
+     *
+     * Este método é útil para análise de desempenho, permitindo verificar quantas
+     * colisões ocorreram ao longo das operações de inserção.
+     *
+     * @return O número total de colisões ocorridas.
+     */
+    long long getCollisions() const noexcept { return collisions; }
 
     /**
      * @brief Retorna o número de pares chave-valor na tabela.
@@ -430,6 +442,7 @@ void ChainedHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key
     for (const auto &pair : m_table[hash_index])
     {
         comparisons++;
+        collisions++;
         if (pair.first == key_value.first)
             return; // chave ja existe, nao adiciona
     }

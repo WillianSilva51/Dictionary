@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 /**
  * @brief Estrutura que representa um nó em uma árvore binária, comumente utilizada em árvores AVL.
  *

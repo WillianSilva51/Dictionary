@@ -6,15 +6,22 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    std::unique_ptr<Dictionary<string, int>> tree = create_dictionary<string, int>(DictionaryType::RBTREE, {{"Alice", 25}, {"Bob", 30}, {"Charlie", 35}, {"David", 40}, {"Eve", 45}, {"Frank", 50}, {"Grace", 55}});
+    std::unique_ptr<Dictionary<string, int>> tree = create_dictionary<string, int>(DictionaryType::OPEN_ADDRESSING_HASH);
 
-    RedBlackTree<string, int> *rb_tree = dynamic_cast<RedBlackTree<string, int> *>(tree.get());
-    if (rb_tree)
+    initializer_list<pair<string, int>> list{{"Alice", 25}, {"Bob", 30}, {"Charlie", 35}, {"David", 40}, {"Eve", 45}, {"Frank", 50}, {"Grace", 55}, {"Heidi", 60}, {"Ivan", 65}, {"Judy", 70}, {"Karl", 75}, {"Leo", 80}, {"Mallory", 85}, {"Nina", 90}, {"Oscar", 95}, {"Peggy", 100}};
+
+    for (const auto &pair : list)
     {
-        cout << "Comparisons: " << rb_tree->getComparisons() << endl
-             << "Rotations: " << rb_tree->getRotations() << endl;
+        cout << "Inserting: " << pair.first << " with value: " << pair.second << endl;
+        tree->insert(pair);
+        tree->print();
+    }
 
-        rb_tree->bshow();
+    OpenHashTable<string, int> *oh_table = dynamic_cast<OpenHashTable<string, int> *>(tree.get());
+    if (oh_table)
+    {
+        cout << "Comparisons: " << oh_table->getComparisons() << endl
+             << "Collisions: " << oh_table->getCollisions() << endl;
     }
 
     tree->print();

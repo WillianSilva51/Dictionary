@@ -659,7 +659,7 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::insert(NodePtr p, const NodePtr ke
         }
         else
         {
-            comparisons++;
+            comparisons += 2;
             return p; // A chave já existe, não insere novamente
         }
     }
@@ -709,7 +709,6 @@ void RedBlackTree<Key, Value>::remove(const Key &key)
             aux = aux->left;
         else
         {
-            comparisons++;
             aux = aux->right;
         }
     }

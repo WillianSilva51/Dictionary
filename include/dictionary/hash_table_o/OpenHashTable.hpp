@@ -52,6 +52,8 @@ private:
 
     long long comparisons{0}; // contador de comparações para análise de desempenho
 
+    long long collisions{0}; // contador de colisões para análise de desempenho
+
     /**
      * @brief Calcula o menor número primo que é maior ou igual a um dado número.
      *
@@ -126,6 +128,16 @@ public:
      * @return long long O número total de comparações realizadas.
      */
     long long getComparisons() const noexcept { return comparisons; }
+
+    /**
+     * @brief Retorna o número de colisões ocorridas durante as operações.
+     *
+     * Este método é útil para análise de desempenho, permitindo verificar quantas
+     * colisões ocorreram ao longo das operações de inserção.
+     *
+     * @return long long O número total de colisões ocorridas.
+     */
+    long long getCollisions() const noexcept { return collisions; }
 
     /**
      * @brief Retorna o número de pares chave-valor na tabela.
@@ -438,8 +450,10 @@ void OpenHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key_va
         }
         else if (m_table[current_index].is_active())
         {
+            comparisons++;
             if (m_table[current_index].data.first == key_value.first)
                 return;
+            collisions++;
         }
         else
         {
@@ -535,7 +549,8 @@ void OpenHashTable<Key, Value, Hash>::rehash(size_t m)
         m_number_of_elements = 0;
 
         for (auto &slot : aux)
-            insert({slot.data.first, slot.data.second});
+            if (slot.is_active())
+                insert({slot.data.first, slot.data.second});
     }
 }
 
