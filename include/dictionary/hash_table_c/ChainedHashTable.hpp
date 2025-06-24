@@ -8,6 +8,8 @@
 #include <functional>
 #include <stdexcept>
 
+#include "dictionary/Dictionary.hpp"
+
 /**
  * @file ChainedHashTable.hpp
  *

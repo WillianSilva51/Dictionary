@@ -217,3 +217,13 @@ ifeq ($(TEST_AVAILABLE),1)
 else
 	@echo "Nenhum teste encontrado. Crie arquivos .cpp em '$(TESTS_DIR)' para rodar testes com Google Test."
 endif
+
+# Regra para limpar os testes
+clean-test:
+ifeq ($(TEST_AVAILABLE),1)
+	@echo "Limpando arquivos de teste..."
+	@$(RM) $(TESTS_DIR)/*.o $(TESTS_DIR)/*.d $(TEST_EXECUTABLE)
+	@echo "Arquivos de teste limpos com sucesso!"
+else
+	@echo "Nenhum teste para limpar."
+endif

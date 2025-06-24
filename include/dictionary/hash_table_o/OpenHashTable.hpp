@@ -14,18 +14,21 @@
 /**
  * @file OpenHashTable.hpp
  *
- * @brief Implementação de um dicionário utilizando uma tabela hash com encadeamento separado.
+ * @brief Implementação de uma tabela hash aberta (Open Hash Table).
  *
- * `OpenHashTable` gerencia uma coleção de pares chave-valor, oferecendo acesso rápido
- * aos elementos. A resolução de colisões é feita através de encadeamento, onde cada
- * "bucket" (ou slot) da tabela pode conter uma lista de elementos que mapeiam para o mesmo índice.
- * A tabela é redimensionada automaticamente (rehashing) quando o fator de carga
- * (número de elementos / tamanho da tabela) excede um valor máximo definido.
+ * Esta classe implementa uma tabela hash aberta, onde cada slot pode conter
+ * um par chave-valor. A tabela utiliza endereçamento aberto para resolver colisões,
+ * e permite inserção, remoção, atualização e busca de elementos.
+ * A tabela é redimensionada automaticamente quando o fator de carga
+ * ultrapassa um limite máximo definido pelo usuário.
  *
- * @tparam Key O tipo dos objetos que funcionam como chaves.
- * @tparam Value O tipo dos objetos que funcionam como valores.
- * @tparam Hash Um objeto de função que calcula o código hash para uma chave.
- *              Por padrão, utiliza `std::hash<Key>`.
+ * @tparam Key Tipo da chave usada para indexação.
+ * @tparam Value Tipo do valor associado a cada chave.
+ * @tparam Hash Tipo da função de hash usada para calcular os índices.
+ *
+ * @note A tabela é projetada para ser eficiente em termos de espaço e tempo,
+ *   minimizando colisões e mantendo um bom desempenho em operações de inserção,
+ *   busca e remoção.
  */
 template <typename Key, typename Value, typename Hash = std::hash<Key>>
 class OpenHashTable : public Dictionary<Key, Value>
@@ -243,13 +246,17 @@ public:
     const Value &at(const Key &k) const;
 
     /**
-     * @brief Solicita uma alteração no número de "buckets" da tabela.
+     * @brief Redimensiona a tabela hash para um novo tamanho.
      *
-     * Se `m` for maior que o `bucket_count()` atual, a tabela é recriada
-     * (rehash) com um tamanho de pelo menos `m` "buckets". Caso contrário,
-     * a chamada não tem efeito.
+     * O tamanho da tabela é ajustado para o próximo número primo maior ou igual a `m`.
+     * Se `m` for menor que o tamanho atual, a tabela não é redimensionada.
+     * Se `m` for maior, a tabela é redimensionada e todos os elementos existentes
+     * são re-hashados para o novo tamanho.
      *
-     * @param m O número mínimo desejado de "buckets".
+     * @param m O novo tamanho desejado para a tabela.
+     *
+     * @note O tamanho da tabela deve ser um número primo para melhor distribuição dos
+     *       elementos e evitar colisões.
      */
     void rehash(size_t m);
 
@@ -358,7 +365,10 @@ size_t OpenHashTable<Key, Value, Hash>::get_next_prime(size_t x)
 template <typename Key, typename Value, typename Hash>
 size_t OpenHashTable<Key, Value, Hash>::hash_code(const Key &k, const size_t &try_count) const
 {
-    return (m_hashing(k) + try_count) % m_table_size;
+    if (try_count == 0)
+        return m_hashing(k) % m_table_size;
+    else
+        return (m_hashing(k) + (try_count * try_count)) % m_table_size;
 }
 
 template <typename Key, typename Value, typename Hash>
