@@ -5,7 +5,6 @@
 #include <string>
 #include <list>
 #include <vector>
-#include <functional>
 #include <stdexcept>
 
 #include "dictionary/Dictionary.hpp"

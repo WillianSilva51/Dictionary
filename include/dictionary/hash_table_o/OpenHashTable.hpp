@@ -1,11 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <cmath>
-#include <string>
 #include <list>
 #include <vector>
-#include <functional>
+#include <cmath>
 #include <stdexcept>
 
 #include "dictionary/Dictionary.hpp"
@@ -365,10 +363,7 @@ size_t OpenHashTable<Key, Value, Hash>::get_next_prime(size_t x)
 template <typename Key, typename Value, typename Hash>
 size_t OpenHashTable<Key, Value, Hash>::hash_code(const Key &k, const size_t &try_count) const
 {
-    if (try_count == 0)
-        return m_hashing(k) % m_table_size;
-    else
-        return (m_hashing(k) + (try_count * try_count)) % m_table_size;
+    return (m_hashing(k) + (try_count * try_count)) % m_table_size;
 }
 
 template <typename Key, typename Value, typename Hash>

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <memory>
-
 #include "dictionary/avl_tree/AVLTree.hpp"
 #include "dictionary/rb_tree/RedBlackTree.hpp"
 #include "dictionary/hash_table_c/ChainedHashTable.hpp"
 #include "dictionary/hash_table_o/OpenHashTable.hpp"
 
+#include "dictionary/Dictionary.hpp"
+
 /**
- * @file DictionaryType.hpp
+ * @file DictionaryFactory.hpp
  *
  * @brief Enumera as estruturas de dados subjacentes disponíveis para uma implementação de dicionário.
  *
@@ -22,10 +22,10 @@
  */
 enum class DictionaryType
 {
-    AVL,
-    RBTREE,
-    CHAINING_HASH,
-    OPEN_ADDRESSING_HASH,
+    AVL,                  ///< Árvore AVL (Adelson-Velsky e Landis)
+    RBTREE,               ///< Árvore Rubro-Negra
+    CHAINING_HASH,        ///< Tabela hash com encadeamento (Chained Hash Table)
+    OPEN_ADDRESSING_HASH, ///< Tabela hash com endereçamento aberto (Open Addressing Hash Table)
 };
 
 /**
