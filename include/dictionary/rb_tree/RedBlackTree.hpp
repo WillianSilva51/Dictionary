@@ -667,7 +667,6 @@ NodeRB<Key, Value> *RedBlackTree<Key, Value>::insert(NodePtr p, const NodePtr ke
 
     key->parent = parent;
 
-    comparisons++;
     if (parent == nil)
     {
         root = key; // Se a árvore estava vazia, o novo nó se torna a raiz

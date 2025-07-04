@@ -72,7 +72,9 @@ private:
      *
      * O processo envolve duas etapas:
      * 1. Computar o código hash da chave `k` usando a função de hash `m_hashing`.
-     * 2. Mapear o código hash para um índice no intervalo [0, m_table_size - 1]
+     * 2. Aplicar o método de sondagem quadrática para resolver colisões,
+     *    onde o índice é ajustado com base no número de tentativas (`try_count`).
+     * 3. Mapear o código hash para um índice no intervalo [0, m_table_size - 1]
      *    usando o método da divisão (resto da divisão).
      *
      * @param k A chave para a qual o índice será calculado.

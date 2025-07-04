@@ -571,6 +571,9 @@ void ChainedHashTable<Key, Value, Hash>::set_max_load_factor(float lf)
 template <typename Key, typename Value, typename Hash>
 Value &ChainedHashTable<Key, Value, Hash>::operator[](const Key &k)
 {
+    if (load_factor() >= m_max_load_factor)
+        rehash(2 * m_table_size);
+
     size_t slot = hash_code(k);
 
     for (auto &pair : m_table[slot])
@@ -580,7 +583,8 @@ Value &ChainedHashTable<Key, Value, Hash>::operator[](const Key &k)
             return pair.second; // retorna o valor associado a chave
     }
 
-    insert({k, Value{}});               // insere um novo elemento com valor padrão
+    m_table[slot].push_back({k, Value()}); // insere um novo elemento com valor padrão
+    m_number_of_elements++;
     return m_table[slot].back().second; // retorna o valor associado a chave
 }
 
