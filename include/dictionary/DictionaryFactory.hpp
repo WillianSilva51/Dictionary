@@ -4,29 +4,8 @@
 #include "dictionary/rb_tree/RedBlackTree.hpp"
 #include "dictionary/hash_table_c/ChainedHashTable.hpp"
 #include "dictionary/hash_table_o/OpenHashTable.hpp"
-
 #include "dictionary/Dictionary.hpp"
-
-/**
- * @file DictionaryFactory.hpp
- *
- * @brief Enumera as estruturas de dados subjacentes disponíveis para uma implementação de dicionário.
- *
- * Isso permite a seleção de um tipo de dicionário específico em tempo de execução ou de compilação,
- * cada um com diferentes características de desempenho em relação às operações de inserção, exclusão e busca.
- *
- * - `AVL`: Uma árvore de busca binária auto-balanceada (árvore Adelson-Velsky e Landis).
- * - `RBTREE`: Uma árvore de busca binária auto-balanceada (Árvore Rubro-Negra).
- * - `CHAINING_HASH`: Uma tabela hash que resolve colisões por encadeamento.
- * - `OPEN_ADDRESSING_HASH`: Uma tabela hash que resolve colisões usando endereçamento aberto.
- */
-enum class DictionaryType : uint8_t
-{
-    AVL,                  ///< Árvore AVL (Adelson-Velsky e Landis)
-    RBTREE,               ///< Árvore Rubro-Negra
-    CHAINING_HASH,        ///< Tabela hash com encadeamento (Chained Hash Table)
-    OPEN_ADDRESSING_HASH, ///< Tabela hash com endereçamento aberto (Open Addressing Hash Table)
-};
+#include "dictionary/DictionaryType.hpp"
 
 /**
  * @brief Cria uma instância de um dicionário do tipo especificado.

@@ -1,6 +1,6 @@
 #include "text_processor/TextProcessor.hpp"
 
-TextProcessor::TextProcessor(const std::string &input_file) : file_stream("files/" + input_file)
+TextProcessor::TextProcessor(const std::string &input_file) : file_stream(input_file)
 {
     if (!file_stream or !file_stream.is_open())
     {
