@@ -3,10 +3,7 @@
 TextProcessor::TextProcessor(const std::string &input_file) : file_stream(input_file)
 {
     if (!file_stream or !file_stream.is_open())
-    {
-        std::cerr << "ERRO CRÍTICO: Não foi possível abrir o ficheiro de entrada '" << input_file << "'." << std::endl;
-        exit(EXIT_FAILURE); // Termina o programa se o ficheiro não puder ser lido.
-    }
+        throw std::runtime_error("CRITICAL ERROR: Could not open file: " + input_file + ".");
 }
 
 void TextProcessor::toLowerCase(std::string &text)
@@ -34,7 +31,7 @@ std::string TextProcessor::normalize(const std::string &word) const
 
     toLowerCase(lowerWord);
 
-    static const std::regex word_regex("[a-zà-ÿ]+(?:[-'][a-zà-ÿ]+)*");
+    static const std::regex word_regex("[a-zà-ÿ]+(?:[-'][a-zà-ÿ]+)*"); // Regex para palavras válidas, incluindo acentos e hífens.
 
     if (std::regex_match(lowerWord, word_regex))
         return lowerWord;

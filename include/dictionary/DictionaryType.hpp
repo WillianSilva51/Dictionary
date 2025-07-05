@@ -38,9 +38,9 @@ std::string get_structure_name(DictionaryType type)
     switch (type)
     {
     case DictionaryType::AVL:
-        return "AVL";
+        return "AVL TREE";
     case DictionaryType::RBTREE:
-        return "RBTREE";
+        return "RB TREE";
     case DictionaryType::CHAINING_HASH:
         return "CHAINING_HASH";
     case DictionaryType::OPEN_ADDRESSING_HASH:

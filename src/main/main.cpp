@@ -67,13 +67,17 @@ void logException(const std::exception &e)
 /**
  * @brief Imprime a mensagem de uso do programa.
  *
- * Esta função exibe uma mensagem de erro informando como usar o programa corretamente,
- * incluindo os parâmetros esperados e as estruturas de dados disponíveis.
+ * Esta função exibe uma mensagem de uso do programa, informando ao usuário
+ * como executar o programa corretamente, quais estruturas de dados estão disponíveis
+ * e como especificar o arquivo de entrada. É útil para usuários que não estão familiarizados
+ * com a linha de comando ou que precisam de ajuda para entender como usar o programa.
  */
 void print_usage()
 {
-    std::cerr << "Use: ./Dictionary <structure> <input_file> [output_file]" << std::endl;
-    std::cerr << "Available structures: avl, rbt, chash, ohash, all" << std::endl;
+    cout << "Use: ./Dictionary <structure> <input_file>" << endl;
+    cout << "Available structures: avl, rbt, chash, ohash, all" << endl;
+    cout << "Example: ./Dictionary avl input.txt" << endl;
+    cout << "Note: The input file should be placed in the 'files/' directory." << endl;
 }
 
 /**
@@ -86,28 +90,31 @@ void print_usage()
  * @param word_count O dicionário contendo a contagem de palavras.
  * @param output_file O arquivo onde as métricas serão escritas.
  */
-void metrics(const Dictionary<std::string, unsigned int> &word_count, std::ofstream &output_file)
+string metrics(const Dictionary<std::string, unsigned int> &word_count)
 {
+    stringstream ss;
     if (auto *chained_hash = dynamic_cast<const ChainedHashTable<std::string, unsigned int> *>(&word_count))
     {
-        output_file << "Collisions: " << chained_hash->getCollisions() << endl;
-        output_file << "Comparisons: " << chained_hash->getComparisons() << endl;
+        ss << "Collisions: " << chained_hash->getCollisions() << endl;
+        ss << "Comparisons: " << chained_hash->getComparisons() << endl;
     }
     else if (auto *open_hash = dynamic_cast<const OpenHashTable<std::string, unsigned int> *>(&word_count))
     {
-        output_file << "Collisions: " << open_hash->getCollisions() << endl;
-        output_file << "Comparisons: " << open_hash->getComparisons() << endl;
+        ss << "Collisions: " << open_hash->getCollisions() << endl;
+        ss << "Comparisons: " << open_hash->getComparisons() << endl;
     }
     else if (auto *avl_tree = dynamic_cast<const AVLTree<std::string, unsigned int> *>(&word_count))
     {
-        output_file << "Rotations: " << avl_tree->getRotations() << endl;
-        output_file << "Comparisons: " << avl_tree->getComparisons() << endl;
+        ss << "Rotations: " << avl_tree->getRotations() << endl;
+        ss << "Comparisons: " << avl_tree->getComparisons() << endl;
     }
     else if (auto *rbtree = dynamic_cast<const RedBlackTree<std::string, unsigned int> *>(&word_count))
     {
-        output_file << "Rotations: " << rbtree->getRotations() << endl;
-        output_file << "Comparisons: " << rbtree->getComparisons() << endl;
+        ss << "Rotations: " << rbtree->getRotations() << endl;
+        ss << "Comparisons: " << rbtree->getComparisons() << endl;
     }
+
+    return ss.str();
 }
 
 /**
@@ -123,8 +130,6 @@ void metrics(const Dictionary<std::string, unsigned int> &word_count, std::ofstr
  */
 void write_output(const std::string &filename, const Dictionary<std::string, unsigned int> &word_count, const std::chrono::duration<double, std::milli> &buildTime, const string &structure_type)
 {
-    create_directory(OUTPUT_DIR); // Cria o diretório de saída se não existir
-
     ofstream output_file(OUTPUT_DIR + filename, ios::app);
 
     if (!output_file or !output_file.is_open())
@@ -141,7 +146,7 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
     output_file << "Build time: " << buildTime.count() << " ms" << endl;
     output_file << "Size: " << word_count.size() << endl;
 
-    metrics(word_count, output_file);
+    output_file << metrics(word_count);
 
     output_file << "---------------------------------------" << endl
                 << endl;
@@ -181,15 +186,12 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
     {
         lock_guard<mutex> lock(mtx);
 
+        cout << "---------------------------------------" << endl;
         cout << "structure: " << structure_type << endl;
+        cout << "build time: " << buildTime.count() << " ms" << endl;
+        cout << metrics(word_count);
         cout << "---------------------------------------" << endl;
-
-        word_count.print();
         cout << endl;
-
-        cout << buildTime.count() << " ms" << endl;
-
-        cout << "---------------------------------------" << endl;
     }
     {
         lock_guard<mutex> lock(mtx);
@@ -230,13 +232,30 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
  */
 int main(int argc, char *argv[])
 {
-    create_directory(INPUT_DIR); // Cria o diretório de entrada se não existir
+    if (argc == 2 and string(argv[1]) == "help")
+    {
+        print_usage();
+        return 0; // Se o usuário solicitar ajuda, exibe a mensagem de uso e encerra o programa
+    }
 
     if (argc < 3)
     {
         print_usage();
         logException(std::invalid_argument("Invalid number of arguments"));
         throw std::invalid_argument("Invalid number of arguments. Expected at least 3 arguments.");
+    }
+
+    // Cria os diretórios de entrada e de saída se não existirem
+    try
+    {
+        create_directory(INPUT_DIR);
+        create_directory(OUTPUT_DIR);
+    }
+    catch (const std::exception &e)
+    {
+        logException(e);
+        cerr << "Failed to create necessary directories: " << e.what() << endl;
+        exit(EXIT_FAILURE); // Retorna um código de erro se não for possível criar os diretórios
     }
 
     setlocale(LC_ALL, "Pt_BR.UTF-8");
@@ -258,7 +277,6 @@ int main(int argc, char *argv[])
                 counters[i] = create_dictionary<string, unsigned int>(DictionaryType(i));
                 threads[i] = thread(counter_words, input_file, ref(*counters[i]), get_structure_name(DictionaryType(i)));
             }
-            
 
             for (int i = 0; i < 4; ++i)
                 threads[i].join();

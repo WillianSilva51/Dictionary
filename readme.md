@@ -202,7 +202,7 @@ A documentação é a melhor fonte de referência para entender os detalhes de i
   - [x] **Parte 1:** Inclusão de contadores de métricas de performance (comparações, rotações, colisões).
   - [x] **Parte 1:** Desenvolvimento de testes unitários com GoogleTest para validar as estruturas.
   - [x] **Parte 1:** Criação da documentação da API com Doxygen.
-  - [ ] **Parte 2:** Implementação da aplicação de contador de frequência (leitura de arquivos, processamento de texto).
+  - [x] **Parte 2:** Implementação da aplicação de contador de frequência (leitura de arquivos, processamento de texto).
   - [ ] **Parte 2:** Coleta de dados e análise comparativa de performance entre as estruturas.
   - [ ] **Parte 2:** Finalização do relatório e apresentação do projeto.
 
