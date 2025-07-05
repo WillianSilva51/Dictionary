@@ -48,9 +48,9 @@ private:
     // referencia para a funcao de codificacao
     Hash m_hashing;
 
-    long long comparisons{0}; // contador de comparações para análise de desempenho
+    mutable long long comparisons{0}; // contador de comparações para análise de desempenho
 
-    long long collisions{0}; // contador de colisões para análise de desempenho
+    mutable long long collisions{0}; // contador de colisões para análise de desempenho
 
     /**
      * @brief Calcula o menor número primo que é maior ou igual a um dado número.
@@ -443,10 +443,12 @@ void ChainedHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key
     for (const auto &pair : m_table[hash_index])
     {
         comparisons++;
-        collisions++;
         if (pair.first == key_value.first)
             return; // chave ja existe, nao adiciona
     }
+
+    if (!m_table[hash_index].empty())
+        collisions++;
 
     m_table[hash_index].push_back(key_value);
     m_number_of_elements++;
@@ -504,6 +506,7 @@ const Value &ChainedHashTable<Key, Value, Hash>::at(const Key &k) const
 
     for (const auto &pair : m_table[hash_index])
     {
+        comparisons++;
         if (pair.first == k)
             return pair.second; // retorna o valor associado a chave
     }
@@ -582,6 +585,9 @@ Value &ChainedHashTable<Key, Value, Hash>::operator[](const Key &k)
         if (pair.first == k)
             return pair.second; // retorna o valor associado a chave
     }
+
+    if (!m_table[slot].empty())
+        collisions++;
 
     m_table[slot].push_back({k, Value()}); // insere um novo elemento com valor padrão
     m_number_of_elements++;

@@ -473,7 +473,7 @@ void OpenHashTable<Key, Value, Hash>::insert(const std::pair<Key, Value> &key_va
         hash_index = first_deleted_index;
 
     if (hash_index == (size_t)-1)
-        return;
+        throw std::out_of_range("Hash table is full, cannot insert new element");
 
     m_table[hash_index] = Slot<Key, Value>(key_value);
     m_number_of_elements++;

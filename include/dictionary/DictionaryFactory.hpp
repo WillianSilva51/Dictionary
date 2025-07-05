@@ -20,7 +20,7 @@
  * - `CHAINING_HASH`: Uma tabela hash que resolve colisões por encadeamento.
  * - `OPEN_ADDRESSING_HASH`: Uma tabela hash que resolve colisões usando endereçamento aberto.
  */
-enum class DictionaryType
+enum class DictionaryType : uint8_t
 {
     AVL,                  ///< Árvore AVL (Adelson-Velsky e Landis)
     RBTREE,               ///< Árvore Rubro-Negra
