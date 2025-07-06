@@ -18,7 +18,12 @@
 
 # --- CONFIGURAÇÕES ---
 # Quantas vezes o programa deve ser executado para o cálculo da média
-NUM_RUNS=100
+
+if [ -z "$1"]; then
+    NUM_RUNS=10
+else
+    NUM_RUNS=$1
+fi
 
 # O arquivo de entrada a ser usado (deve estar na pasta 'files/')
 # Sugestão: use um arquivo grande como 'bible.txt' ou 'donquijote.txt' para métricas mais significativas.
