@@ -9,11 +9,11 @@ on:
     branches: [ main, master, develop ]
   
   workflow_dispatch:
-  inputs:
-    runs:
-      description: 'Number of runs for the benchmark'
-      required: false
-      default: '5'
+    inputs:
+      runs:
+        description: 'Number of runs for the benchmark'
+        required: false
+        default: '5'
 
 
 jobs:
@@ -38,10 +38,10 @@ jobs:
           run: ./benchmark.sh ${{ github.event.inputs.runs }}
 
     run-benchmark-default:
-    if: github.event_name != 'workflow_dispatch'
-    runs-on: ubuntu-latest
+      if: github.event_name != 'workflow_dispatch'
+      runs-on: ubuntu-latest
 
-    steps:
+      steps:
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
