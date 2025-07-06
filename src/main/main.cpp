@@ -135,8 +135,11 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
     if (!output_file or !output_file.is_open())
         throw std::runtime_error("Failed to open output file " + filename);
 
-    word_count.forEach([&output_file](const std::pair<std::string, unsigned int> &pair)
-                       { output_file << "[" << pair.first << ", " << pair.second << "]" << endl; });
+    if (output_file.tellp() == 0) // Verifica se o arquivo está vazio
+    {
+        word_count.forEach([&output_file](const std::pair<std::string, unsigned int> &pair)
+                           { output_file << "[" << pair.first << ", " << pair.second << "]" << endl; });
+    }
 
     output_file << endl;
     output_file << "---------------------------------------" << endl;
@@ -278,7 +281,7 @@ int main(int argc, char *argv[])
                 threads[i] = thread(counter_words, input_file, ref(*counters[i]), get_structure_name(DictionaryType(i)));
             }
 
-            for (int i = 0; i < 4; ++i)
+            for (size_t i = 0; i < 4; ++i)
                 threads[i].join();
         }
         else

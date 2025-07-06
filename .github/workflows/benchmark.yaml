@@ -1,0 +1,38 @@
+name: Benchmark CI with all Dictionary implementations
+
+# This workflow runs benchmarks for all Dictionary implementations in the repository.
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+
+  benchmark:
+  
+  runs-on: ubuntu-latest
+
+  steps:
+
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Set up the environment
+    - name: Install Dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential bc
+
+    # Compile the project
+    - name: Compile the project
+      run: make MODE=release
+
+    # Make the benchmark script executable
+    - name: Make benchmark script executable
+      run: chmod +x ./benchmark.sh
+
+    # Run the benchmark script
+    - name: Run Benchmark script
+      run: ./benchmark.sh
