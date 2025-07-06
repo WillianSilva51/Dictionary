@@ -3,10 +3,10 @@ name: Benchmark CI with all Dictionary implementations
 # This workflow runs benchmarks for all Dictionary implementations in the repository.
 
 on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+ # push:
+  #  branches: [ main, master, develop ]
+ # pull_request:
+  #  branches: [ main, master, develop ]
 
   workflow_dispatch:
 
