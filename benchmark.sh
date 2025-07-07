@@ -27,7 +27,11 @@ fi
 
 # O arquivo de entrada a ser usado (deve estar na pasta 'files/')
 # Sugestão: use um arquivo grande como 'bible.txt' ou 'donquijote.txt' para métricas mais significativas.
-INPUT_FILE="bible.txt"
+if [ -z "$2" ]; then
+    INPUT_FILE="bible.txt"
+else
+    INPUT_FILE=$2
+fi
 
 # Caminho para o seu executável
 EXECUTABLE="./build/bin/Dictionary"

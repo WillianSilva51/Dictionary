@@ -84,6 +84,7 @@ $(OUTPUT): $(OBJECTS) | $(OUTPUT_DIR)
 	@echo "Linkando executavel $@ com os arquivos: $^"
 	@$(CXX) -o $@ $^ $(LIBS)
 	@echo "Compilacao concluida com sucesso!"
+	@echo Executavel criado em: $(OUTPUT_DIR)/$(OUTPUT_NAME)$(EXT)
 
 #===============================================================================
 # REGRA PARA CRIAR OS DIRETÓRIOS (usando o comando específico de cada SO)

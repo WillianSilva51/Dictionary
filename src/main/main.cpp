@@ -137,12 +137,33 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
 
     if (output_file.tellp() == 0) // Verifica se o arquivo está vazio
     {
-        word_count.forEach([&output_file](const std::pair<std::string, unsigned int> &pair)
-                           { output_file << "[" << pair.first << ", " << pair.second << "]" << endl; });
+        output_file << "=========================================================================" << endl;
+        output_file << "Word Count for file: " << filename << endl;
+        output_file << "=========================================================================" << endl;
+        output_file << endl;
+
+        if (structure_type == "CHAINING_HASH" or structure_type == "OPEN_ADDRESSING_HASH")
+        {
+            vector<pair<string, unsigned int>> word_vector;
+
+            word_count.forEach([&word_vector](const std::pair<std::string, unsigned int> &pair)
+                               { word_vector.emplace_back(pair); });
+
+            sort(word_vector.begin(), word_vector.end(), [](const auto &a, const auto &b)
+                 { return a.first < b.first; });
+
+            for (const auto &[word, count] : word_vector)
+                output_file << "[" << word << ", " << count << "]" << endl;
+        }
+        else
+        {
+            word_count.forEach([&output_file](const std::pair<std::string, unsigned int> &pair)
+                               { output_file << "[" << pair.first << ", " << pair.second << "]" << endl; });
+        }
     }
 
     output_file << endl;
-    output_file << "========================================================" << endl;
+    output_file << "=========================================================================" << endl;
 
     output_file << "Metrics:" << endl;
     output_file << "Structure: " << structure_type << endl;
@@ -151,7 +172,7 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
 
     output_file << metrics(word_count);
 
-    output_file << "========================================================" << endl
+    output_file << "=========================================================================" << endl
                 << endl;
 
     output_file.close();
@@ -189,11 +210,11 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
     {
         lock_guard<mutex> lock(mtx);
 
-        cout << "========================================================" << endl;
+        cout << "=========================================================================" << endl;
         cout << "structure: " << structure_type << endl;
         cout << "build time: " << buildTime.count() << " ms" << endl;
         cout << metrics(word_count);
-        cout << "========================================================" << endl;
+        cout << "=========================================================================" << endl;
         cout << endl;
     }
     {
@@ -299,8 +320,12 @@ int main(int argc, char *argv[])
     }
     catch (const std::exception &e)
     {
+        cerr << "An error occurred: " << e.what() << endl;
         logException(e);
     }
+
+    cout << "Processing completed." << endl;
+    cout << "Results are saved in the '" << OUTPUT_DIR << "' directory." << endl;
 
     return 0;
 }

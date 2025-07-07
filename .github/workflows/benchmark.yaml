@@ -1,13 +1,7 @@
 name: Benchmark CI with all Dictionary implementations
-
 # This workflow runs benchmarks for all Dictionary implementations in the repository.
 
-on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
-  
+on:  
   workflow_dispatch:
     inputs:
       runs:
@@ -15,18 +9,16 @@ on:
         required: false
         default: '5'
 
-
 jobs:
     run-benchmark-custom:
-      if: github.event_name == 'workflow_dispatch'
       runs-on: ubuntu-latest
 
       steps:
         - name: Checkout repository
           uses: actions/checkout@v4
 
-      #  - name: Install Dependencies
-      #   run: sudo apt-get update && sudo apt-get install -y build-essential bc
+        - name: Install Dependencies
+          run: sudo apt-get update && sudo apt-get install -y build-essential bc
 
         - name: Compile the project
           run: make MODE=release
@@ -35,29 +27,4 @@ jobs:
           run: chmod +x ./benchmark.sh
 
         - name: Run Benchmark script
-          run: ./benchmark.sh ${{ github.event.inputs.runs }}
-
-    run-benchmark-default:
-      if: github.event_name != 'workflow_dispatch'
-      runs-on: ubuntu-latest
-
-      steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Set up the environment
-     # - name: Install Dependencies
-      #  run: sudo apt-get update && sudo apt-get install -y build-essential bc
-
-      # Compile the project
-      - name: Compile the project
-        run: make MODE=release
-
-      # Make the benchmark script executable
-      - name: Make benchmark script executable
-        run: chmod +x ./benchmark.sh
-
-      # Run the benchmark script
-      - name: Run Benchmark script
-        run: ./benchmark.sh  
+          run: ./benchmark.sh ${{ github.event.inputs.runs }} bible.txt
