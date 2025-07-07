@@ -31,10 +31,12 @@ std::string TextProcessor::normalize(const std::string &word) const
 
     toLowerCase(lowerWord);
 
-    static const std::regex word_regex("[a-zà-ÿ0-9]+(?:[-'][a-zà-ÿ0-9]+)*"); // Regex para palavras válidas, incluindo acentos e hífens.
+    static const std::regex word_regex("[a-zà-ÿ]+(?:[-'][a-zà-ÿ]+)*"); // Regex para palavras válidas, incluindo acentos e hífens.
 
-    if (std::regex_match(lowerWord, word_regex))
-        return lowerWord;
+    std::smatch match;
+
+    if (std::regex_search(lowerWord, match, word_regex))
+        return match.str();
 
     return "";
 }

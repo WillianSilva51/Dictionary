@@ -1,3 +1,7 @@
-Esta é a tarefa mais crítica da Parte 2. O objetivo é ler um arquivo de texto, - normalizar seu conteúdo e extrair uma lista de palavras limpas.
+Esta é a tarefa mais crítica da Parte fla. O objetivo é ler um arquivo de texto, - normalizar seu conteúdo e extrair uma lista de palavras limpas.
+
+fla
 
 para-quedas -paraquedas -para-quedas
+
+4
