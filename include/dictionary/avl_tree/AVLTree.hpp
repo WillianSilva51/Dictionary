@@ -527,7 +527,7 @@ AVLTree<Key, Value>::AVLTree(const AVLTree &other) : AVLTree()
 template <typename Key, typename Value>
 std::unique_ptr<Dictionary<Key, Value>> AVLTree<Key, Value>::clone() const
 {
-    return make_unique<AVLTree<Key, Value>>(*this);
+    return std::make_unique<AVLTree<Key, Value>>(*this);
 }
 
 template <typename Key, typename Value>

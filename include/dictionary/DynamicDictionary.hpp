@@ -71,7 +71,7 @@ public:
      */
     std::unique_ptr<Dictionary<Key, Value>> clone() const
     {
-        return make_unique<DynamicDictionary<Key, Value>>(*this);
+        return std::make_unique<DynamicDictionary<Key, Value>>(*this);
     }
 
     /**

@@ -19,8 +19,8 @@
 # --- CONFIGURAÇÕES ---
 # Quantas vezes o programa deve ser executado para o cálculo da média
 
-if [ -z "$1"]; then
-    NUM_RUNS=10
+if [ -z "$1" ]; then
+    NUM_RUNS=5
 else
     NUM_RUNS=$1
 fi

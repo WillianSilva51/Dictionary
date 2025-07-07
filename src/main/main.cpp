@@ -142,7 +142,7 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
     }
 
     output_file << endl;
-    output_file << "---------------------------------------" << endl;
+    output_file << "========================================================" << endl;
 
     output_file << "Metrics:" << endl;
     output_file << "Structure: " << structure_type << endl;
@@ -151,7 +151,7 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
 
     output_file << metrics(word_count);
 
-    output_file << "---------------------------------------" << endl
+    output_file << "========================================================" << endl
                 << endl;
 
     output_file.close();
@@ -189,11 +189,11 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
     {
         lock_guard<mutex> lock(mtx);
 
-        cout << "---------------------------------------" << endl;
+        cout << "========================================================" << endl;
         cout << "structure: " << structure_type << endl;
         cout << "build time: " << buildTime.count() << " ms" << endl;
         cout << metrics(word_count);
-        cout << "---------------------------------------" << endl;
+        cout << "========================================================" << endl;
         cout << endl;
     }
     {
@@ -251,7 +251,13 @@ int main(int argc, char *argv[])
     // Cria os diretórios de entrada e de saída se não existirem
     try
     {
-        create_directory(INPUT_DIR);
+        if (!filesystem::exists(INPUT_DIR))
+        {
+            create_directory(INPUT_DIR);
+            cout << "Input directory created: " << INPUT_DIR << endl;
+            cout << "Please place your input files in this directory." << endl;
+            return 0; // Se o diretório de entrada não existir, cria e encerra o programa
+        }
         create_directory(OUTPUT_DIR);
     }
     catch (const std::exception &e)
