@@ -4,8 +4,10 @@
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/WillianSilva51/Dictionary?style=for-the-badge)
 ![GitHub License](https://img.shields.io/github/license/WillianSilva51/Dictionary?style=for-the-badge)  
 
-<img src="docs/images/logoM.png" alt="Logo do projeto" width="300" loading="lazy" style="display: block; margin: auto;">
-
+<p align="center">
+<img src="docs/images/logoM.png" alt="Logo do projeto"  width="300" loading="lazy" style="display: block; margin: auto;">
+<p/>
+  
 > Aplicação em C++ para contagem de frequência de palavras em textos, utilizando e comparando o desempenho de quatro diferentes estruturas de dados: Árvore AVL, Árvore Rubro-Negra, Tabela Hash com Encadeamento e Tabela Hash com Endereçamento Aberto.
 
 ## 📑 Sumário
