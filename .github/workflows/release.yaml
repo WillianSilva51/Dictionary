@@ -1,0 +1,77 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Executa quando uma tag no formato vX.Y.Z é criada
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            asset_name: Dictionary
+            ext: ""
+            cxx: g++
+          - os: windows-latest
+            asset_name: Dictionary
+            ext: ".exe"
+            cxx: g++
+          - os: macos-latest
+            asset_name: Dictionary
+            ext: ""
+            cxx: clang++
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Setup Build Tools (Linux)
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Setup Build Tools (Windows)
+      if: runner.os == 'Windows'
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        version: latest
+
+    - name: Build project
+      run: make CXX=${{ matrix.cxx }} EXT=${{ matrix.ext }} MODE=release
+
+    - name: Archive executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.asset_name }}
+        path: build/bin/Dictionary${{ matrix.ext }}
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create ZIP archives
+        run: |
+          cd artifacts/Dictionary && zip ../Dictionary.zip * && cd ../..
+          cd artifacts/Dictionary && zip ../Dictionary.zip * && cd ../..
+          cd artifacts/Dictionary && zip ../Dictionary.zip * && cd ../..
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/Dictionary.zip
+            artifacts/Dictionary.zip
+            artifacts/Dictionary.zip
+          body_path: .github/release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
