@@ -12,19 +12,19 @@
 
 ## 📑 Sumário
 
-  - [Sobre o Projeto](https://www.google.com/search?q=%23sobre-o-projeto)
-  - [Estruturas e Funcionalidades](https://www.google.com/search?q=%23estruturas-e-funcionalidades)
-  - [Métricas Coletadas](https://www.google.com/search?q=%23m%C3%A9tricas-coletadas)
-  - [Arquitetura e UML](https://www.google.com/search?q=%23arquitetura-e-uml)
-  - [Pré-requisitos](https://www.google.com/search?q=%23pr%C3%A9-requisitos)
-  - [Instalação e Compilação](https://www.google.com/search?q=%23instala%C3%A7%C3%A3o-e-compila%C3%A7%C3%A3o)
-  - [Executando o Programa](https://www.google.com/search?q=%23executando-o-programa)
-  - [Executando os Testes](https://www.google.com/search?q=%23executando-os-testes)
-  - [Documentação da API](https://www.google.com/search?q=%23documenta%C3%A7%C3%A3o-da-api)
-  - [Roadmap do Projeto](https://www.google.com/search?q=%23roadmap-do-projeto)
-  - [Contribuição](https://www.google.com/search?q=%23contribui%C3%A7%C3%A3o)
-  - [Licença](https://www.google.com/search?q=%23licen%C3%A7a)
-  - [Créditos](https://www.google.com/search?q=%23cr%C3%A9ditos)
+  - [Sobre o Projeto](#sobre-o-projeto)
+  - [Estruturas e Funcionalidades](#estruturas-e-funcionalidades)
+  - [Métricas Coletadas](#métricas-coletadas)
+  - [Arquitetura e UML](#arquitetura-e-uml)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instalação e Compilação](#instalação-e-compilação)
+  - [Executando o Programa](#executando-o-programa)
+  - [Executando os Testes](#executando-os-testes)
+  - [Documentação da API](#documentação-da-api)
+  - [Roadmap do Projeto](#roadmap-do-projeto)
+  - [Contribuição](#contribuição)
+  - [Licença](#licença)
+  - [Créditos](#créditos)
 
 -----
 
