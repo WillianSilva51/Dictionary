@@ -74,10 +74,12 @@ void logException(const std::exception &e)
  */
 void print_usage()
 {
+    cout << "Helper: Dictionary Word Counter" << endl;
     cout << "Use: ./Dictionary <structure> <input_file>" << endl;
     cout << "Available structures: avl, rbt, chash, ohash, all" << endl;
     cout << "Example: ./Dictionary avl input.txt" << endl;
     cout << "Note: The input file should be placed in the 'files/' directory." << endl;
+    cout << "If you want see again this message, run: ./Dictionary help" << endl;
 }
 
 /**
@@ -208,7 +210,7 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
     chrono::duration<double, milli> buildTime = endTime - startTime;
 
     {
-        lock_guard<mutex> lock(mtx);
+        lock_guard<mutex> lock(mtx); // Protege o acesso ao dicionário
 
         cout << "=========================================================================" << endl;
         cout << "structure: " << structure_type << endl;
@@ -218,7 +220,7 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
         cout << endl;
     }
     {
-        lock_guard<mutex> lock(mtx);
+        lock_guard<mutex> lock(mtx); // Protege o acesso ao arquivo de saída
 
         write_output(filename, word_count, buildTime, structure_type);
     }
@@ -246,11 +248,11 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
  * @param argc O número de argumentos fornecidos na linha de comando. O programa espera pelo menos 3 (nome do programa, tipo da estrutura, arquivo de entrada).
  * @param argv Um vetor de strings contendo os argumentos da linha de comando.
  *
- *             - `argv[0]`: O nome do programa (geralmente "Dictionary").
+ *           - `argv[0]`: O nome do programa (geralmente "Dictionary").
  *
- *             - `argv[1]`: O tipo da estrutura de dados a ser usada ("avl", "rbt", "chash", "ohash") ou "all" para usar todas.
+ *           - `argv[1]`: O tipo da estrutura de dados a ser usada ("avl", "rbt", "chash", "ohash") ou "all" para usar todas.
  *
- *             - `argv[2]`: O caminho para o arquivo de texto de entrada.
+ *           - `argv[2]`: O caminho para o arquivo de texto de entrada.
  *
  * @return int Retorna 0 em caso de execução bem-sucedida. Retorna um código de erro implícito em caso de falha (geralmente gerenciado pelo sistema operacional).
  */

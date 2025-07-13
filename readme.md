@@ -1,140 +1,180 @@
 # 📊 Contador de Frequências com Estruturas de Dados Avançadas
 
-<p align="center">
-  <img src="docs/images/logoM.png" alt="Logo do projeto" width="300" loading="lazy"/>
-</p>
+![GitHub repo size](https://img.shields.io/github/repo-size/WillianSilva51/Dictionary?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/WillianSilva51/Dictionary?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/WillianSilva51/Dictionary?style=for-the-badge)  
 
-> Implementação e análise comparativa em C++ de múltiplas estruturas de dados (Árvore AVL, Árvore Rubro-Negra, Tabela Hash com Encadeamento e com Endereçamento Aberto) aplicadas a um problema de contagem de frequência de palavras.
+<img src="docs/images/logoM.png" alt="Logo do projeto" width="300" loading="lazy" style="display: block; margin: auto;">
+
+> Aplicação em C++ para contagem de frequência de palavras em textos, utilizando e comparando o desempenho de quatro diferentes estruturas de dados: Árvore AVL, Árvore Rubro-Negra, Tabela Hash com Encadeamento e Tabela Hash com Endereçamento Aberto.
 
 ## 📑 Sumário
 
-  - [Sobre o Projeto](#sobre-o-projeto)
-  - [Estruturas e Funcionalidades](#estruturas-e-funcionalidades)
-  - [Métricas Coletadas](#métricas-coletadas)
-  - [Arquitetura e UML](#arquitetura-e-uml)
-  - [Pré-requisitos](#pré-requisitos)
-  - [Instalação e Compilação](#instalação-e-compilação)
-  - [Executando os Testes](#executando-os-testes)
-  - [Documentação da API](#documentação-da-api)
-  - [Roadmap do Projeto](#roadmap-do-projeto)
-  - [Contribuição](#contribuição)
-  - [Licença](#licença)
-  - [Créditos](#créditos)
+  - [Sobre o Projeto](https://www.google.com/search?q=%23sobre-o-projeto)
+  - [Estruturas e Funcionalidades](https://www.google.com/search?q=%23estruturas-e-funcionalidades)
+  - [Métricas Coletadas](https://www.google.com/search?q=%23m%C3%A9tricas-coletadas)
+  - [Arquitetura e UML](https://www.google.com/search?q=%23arquitetura-e-uml)
+  - [Pré-requisitos](https://www.google.com/search?q=%23pr%C3%A9-requisitos)
+  - [Instalação e Compilação](https://www.google.com/search?q=%23instala%C3%A7%C3%A3o-e-compila%C3%A7%C3%A3o)
+  - [Executando o Programa](https://www.google.com/search?q=%23executando-o-programa)
+  - [Executando os Testes](https://www.google.com/search?q=%23executando-os-testes)
+  - [Documentação da API](https://www.google.com/search?q=%23documenta%C3%A7%C3%A3o-da-api)
+  - [Roadmap do Projeto](https://www.google.com/search?q=%23roadmap-do-projeto)
+  - [Contribuição](https://www.google.com/search?q=%23contribui%C3%A7%C3%A3o)
+  - [Licença](https://www.google.com/search?q=%23licen%C3%A7a)
+  - [Créditos](https://www.google.com/search?q=%23cr%C3%A9ditos)
 
 -----
 
 ## Sobre o Projeto
 
-Este repositório contém a **Parte 1** do projeto da disciplina de Estruturas de Dados Avançadas (QXD0115) da Universidade Federal do Ceará. O objetivo final do projeto é desenvolver um contador de frequência de palavras a partir de um arquivo de texto e, mais importante, analisar e comparar a performance de diferentes estruturas de dados subjacentes.
+Este repositório contém um projeto completo para a disciplina de Estruturas de Dados Avançadas (QXD0115) da Universidade Federal do Ceará. O objetivo é duplo:
 
-Nesta primeira fase, o foco está na implementação robusta e genérica das seguintes estruturas de dados, que servem como "dicionários" (mapas de chave-valor):
+1.  **Implementar Estruturas de Dados:** Desenvolver implementações genéricas, robustas e eficientes de dicionários (mapas chave-valor) usando Árvore AVL, Árvore Rubro-Negra, Tabela Hash com Encadeamento e Tabela Hash com Endereçamento Aberto.
+2.  **Analisar Performance:** Utilizar essas estruturas em uma aplicação prática de contagem de frequência de palavras para coletar métricas (comparações, rotações, colisões) e realizar uma análise empírica do desempenho de cada uma em um cenário real.
 
-  * **Árvore AVL**
-  * **Árvore Rubro-Negra**
-  * **Tabela Hash com Encadeamento Separado**
-  * **Tabela Hash com Endereçamento Aberto (Sondagem Linear)**
+O projeto é dividido em duas partes principais, conforme a especificação:
 
-Cada estrutura foi instrumentada com contadores para coletar métricas de desempenho, permitindo uma análise empírica de suas operações.
+  * **Parte 1:** Foco na implementação e teste das estruturas de dados.
+  * **Parte 2:** Desenvolvimento da aplicação final (contador de frequência) e análise comparativa.
 
-  - **Status:** 🎯 **Parte 1 Concluída**
-  - **Tecnologias:** C++21, STL, GoogleTest
-  - **Objetivo da Parte 1:** Fornecer implementações corretas, genéricas e testadas das estruturas de dados, capazes de coletar métricas de performance para análise futura.
+<!-- end list -->
+
+  - **Status:** 🚀 **Aplicação Finalizada e Pronta para Análise**
+  - **Tecnologias:** C++20, STL, GoogleTest, Doxygen, Make
+  - **Objetivo Final:** Fornecer uma ferramenta funcional para análise de texto e, mais importante, um estudo comparativo sobre a performance de estruturas de dados clássicas.
 
 -----
 
 ## Estruturas e Funcionalidades
 
-O projeto define uma interface de dicionário (`Dictionary<Key, Value>`) com as seguintes operações essenciais, garantindo que a aplicação final possa alternar entre as diferentes implementações de forma transparente.
+O núcleo do projeto é uma interface de dicionário (`Dictionary<Key, Value>`) que abstrai a implementação subjacente, permitindo que a aplicação principal troque a estrutura de dados dinamicamente.
 
-  * `insert(key, value)` – Adiciona um par chave-valor ao dicionário.
+### Interface `Dictionary`
 
-  * `remove(key)` – Remove um par com base na chave.
-  
-  * `at(key)` – Busca um valor associado a uma chave.
-  
-  * `contains(key)` – Verifica se uma chave está presente.
-  
-  * `clear()` – Remove todos os elementos do dicionário.
-  
-  * `empty()` – Verifica se o dicionário está vazio.
-  
-  * `size()` – Retorna o número de elementos.
-  
-  * `update(key, value)` – Atualiza o valor associado a uma chave existente.
-  
-  * `operator[](key)` – Permite acesso direto ao valor associado a uma chave, similar ao operador de índice em mapas.
-  
-  * `print()` – Imprime todos os pares chave-valor no dicionário.
-  
-  * `forEach(callback)` – Executa uma função de callback para cada par chave-valor.
-  
-  * `clone()` – Cria uma cópia profunda do dicionário, útil para operações que requerem duplicação de dados.
+A interface `Dictionary.hpp` define o seguinte contrato para todas as estruturas:
+
+  - `insert(const std::pair<Key, Value>&)`: Adiciona um par chave-valor.
+  - `remove(const Key&)`: Remove um par com base na chave.
+  - `update(const std::pair<Key, Value>&)`: Atualiza o valor de uma chave existente.
+  - `contains(const Key&)`: Verifica a existência de uma chave.
+  - `at(const Key&)`: Busca e retorna uma referência ao valor associado a uma chave.
+  - `operator[](const Key&)`: Permite acesso ou inserção de um valor (similar ao `std::map`).
+  - `clear()`: Remove todos os elementos.
+  - `size()`: Retorna o número de elementos.
+  - `empty()`: Verifica se o dicionário está vazio.
+  - `print()`: Imprime o conteúdo do dicionário.
+  - `forEach(const std::function<...>&)`: Executa uma função para cada par chave-valor.
+  - `clone()`: Cria uma cópia profunda (deep copy) do dicionário.
+
+### Componentes da Aplicação
+
+Além das estruturas de dados, a aplicação conta com os seguintes componentes principais:
+
+  - **`DynamicDictionary`**: Uma classe *wrapper* que permite selecionar e usar qualquer uma das implementações de dicionário em tempo de execução.
+  - **`DictionaryFactory`**: Uma fábrica que simplifica a criação de instâncias de dicionários (`AVLTree`, `RedBlackTree`, etc.) com base em um `DictionaryType`.
+  - **`TextProcessor`**: Classe responsável por ler um arquivo de texto, normalizar as palavras (convertendo para minúsculas e removendo pontuações) e alimentar o dicionário.
 
 -----
 
 ### Métricas Coletadas
 
-Um requisito central desta fase é a análise de performance. Para isso, as seguintes métricas são rastreadas dentro de cada estrutura:
+Um requisito central do projeto é a análise de performance. Para isso, as seguintes métricas são rastreadas dentro de cada estrutura:
 
 | Estrutura | Métricas |
 | :--- | :--- |
-| **Árvores (AVL e Rubro-Negra)** | `comparações`, `rotações` (simples e duplas) |
+| **Árvores (AVL e Rubro-Negra)** | `comparações`, `rotações` |
 | **Tabelas Hash** | `comparações`, `colisões` |
 
-Estes dados são cruciais para a análise comparativa que será realizada na segunda parte do projeto.
+Esses dados, juntamente com o tempo de execução, são salvos em arquivos de saída para permitir a análise comparativa.
 
 -----
 
 ## Arquitetura e UML
 
-A arquitetura foi projetada para ser extensível e modular. Uma classe base abstrata `Dictionary` define o contrato para todas as implementações concretas, e uma `DictionaryFactory` facilita a criação de diferentes tipos de dicionários.
+A arquitetura foi projetada para ser modular e extensível. O diagrama abaixo ilustra a relação entre os principais componentes do sistema:
 
 ```mermaid
 classDiagram
-    direction LR
-    class Dictionary~Key, Value~ {
-      <<Interface>>
-      +insert(key, value): void
-      +remove(key): void
-      +update(key, value): void
-      +contains(key): bool
-      +at(key): Value
-      +operator[](key): Value
-      +clear(): void    
-      +size(): size_t
-      +empty(): bool
-      +print(): void
-      +forEach(callback: function): void
-      +clone(): unique_ptr<Dictionary<Key, Value>>
-    }
-    class AVLTree~Key, Value~ {
-      +insert(key, value)
-    }
-    class RedBlackTree~Key, Value~ {
-      +insert(key, value)
-    }
-    class ChainedHashTable~Key, Value~ {
-      +insert(key, value)
-    }
-    class OpenHashTable~Key, Value~ {
-      +insert(key, value)
-    }
+    direction LR
 
-    Dictionary <|-- AVLTree
-    Dictionary <|-- RedBlackTree
-    Dictionary <|-- ChainedHashTable
-    Dictionary <|-- OpenHashTable
+    class TextProcessor {
+        -file_stream: ifstream
+        -normalize(word: string): string
+        +toLowerCase(text: string): void
+        +processFile(wordHandler: function): void
+    }
+
+    class DictionaryFactory {
+        <<Factory>>
+        +create_dictionary(type): unique_ptr<Dictionary>
+    }
+
+    class Dictionary~Key, Value~ {
+        <<Interface>>
+        +insert(pair): void
+        +update(pair): void
+        +remove(key): void
+        +at(key): Value
+        +contains(key): bool
+        +operator\[](key): Value
+        +clear(): void
+        +size(): size_t
+        +empty(): bool
+        +print(): void
+        +forEach(func: function):void
+        +clone(): unique_ptr<Dictionary>
+    }
+
+    class DynamicDictionary {
+        -dictionary: unique_ptr<Dictionary>
+        -type: DictionaryType
+    }
+
+    class AVLTree~Key, Value~ {
+        -comparisons: long long
+        -rotations: long long
+    }
+    class RedBlackTree~Key, Value~ {
+        -comparisons: long long
+        -rotations: long long
+    }
+    class ChainedHashTable~Key, Value~ {
+        -comparisons: long long
+        -collisions: long long
+    }
+    class OpenHashTable~Key, Value~ {
+        -comparisons: long long
+        -collisions: long long
+    }
+
+    TextProcessor --> DynamicDictionary : "Usa para contar palavras"
+    DynamicDictionary o-- Dictionary
+    DictionaryFactory ..> AVLTree : "Cria"
+    DictionaryFactory ..> RedBlackTree : "Cria"
+    DictionaryFactory ..> ChainedHashTable : "Cria"
+    DictionaryFactory ..> OpenHashTable : "Cria"
+
+    Dictionary <|-- AVLTree
+    Dictionary <|-- RedBlackTree
+    Dictionary <|-- ChainedHashTable
+    Dictionary <|-- OpenHashTable
 ```
+Este diagrama UML mostra a relação entre as classes principais do projeto, destacando a interface `Dictionary` e suas implementações concretas. A classe `TextProcessor` é responsável por processar o texto e alimentar o dicionário, enquanto a `DictionaryFactory` facilita a criação das diferentes estruturas de dados.
+
+---
+Diagrama geral do projeto:
+
+<img src="docs/uml/diagram.svg" alt="Diagrama UML do projeto" width="800" loading="lazy" style="display: block; margin: auto;">
 
 -----
 
 ## Pré-requisitos
 
 Para compilar e executar este projeto, você precisará de:
-
-  - **Sistema Operacional:** Linux ou subsistema WSL no Windows, Windows e Mac.
-  - **Compilador C++:** `g++` com suporte a C++21.
+  - **Compilador C++:** `g++` com suporte a C++20 ou superior.
   - **Ferramentas de Build:** `make` e `git`.
+  - **Documentação:** `Doxygen` (opcional, para gerar a documentação da API).
 
 A biblioteca `googletest` é utilizada para os testes e já está incluída como um submódulo no repositório.
 
@@ -158,32 +198,78 @@ Siga os passos abaixo para obter o código e compilá-lo.
     ```
 
 3.  **Compile o projeto usando o Makefile:**
-    O `makefile` principal oferece vários alvos. Para a Parte 1, os mais relevantes são `all` (para compilar tudo) e `test` (para executar os testes).
+    O `makefile` principal oferece vários alvos. Para compilar a aplicação principal e os testes, use `all`.
 
     ```bash
-    # Compila o programa principal e os testes
-    make all
+    # Compila o programa principal
+    make
     ```
+
+    Para compilar em modo *release* (otimizado), use:
+
+    ```bash
+    make MODE=release
+    ```
+
+-----
+
+## Executando o Programa
+
+Após a compilação, você pode executar o contador de frequência a partir da raiz do projeto. O programa espera dois argumentos: o tipo de estrutura de dados e o nome do arquivo de texto (que deve estar no diretório `files/`).
+
+**Sintaxe:**
+
+```bash
+./build/bin/Dictionary <estrutura> <arquivo.txt>
+```
+
+**Argumentos:**
+
+  * `<estrutura>`: O tipo de dicionário a ser usado. Opções:
+      * `avl`: Árvore AVL
+      * `rbt`: Árvore Rubro-Negra
+      * `chash`: Tabela Hash com Encadeamento
+      * `ohash`: Tabela Hash com Endereçamento Aberto
+      * `all`: Executa e compara todas as quatro estruturas em threads separadas.
+  * `<arquivo.txt>`: O nome do arquivo de texto localizado na pasta `files/`.
+
+**Exemplos:**
+
+```bash
+# Executar com a Árvore Rubro-Negra no arquivo bible.txt
+./build/bin/Dictionary rbt bible.txt
+
+# Executar e comparar todas as estruturas no arquivo donquijote.txt
+./build/bin/Dictionary all donquijote.txt
+```
+
+Os resultados, incluindo a contagem de palavras e as métricas de desempenho, serão salvos em um novo arquivo dentro do diretório `out/`. O programa também exibirá um resumo das métricas no console.
+
+Para ver a mensagem de ajuda, execute:
+
+```bash
+./build/bin/Dictionary help
+```
 
 -----
 
 ## Executando os Testes
 
-A validação das estruturas de dados, foco da Parte 1, é realizada através de um conjunto de testes unitários. Para executá-los, use o seguinte comando:
+A validação das estruturas de dados é realizada através de um conjunto de testes unitários com GoogleTest. Para executá-los, use o seguinte comando:
 
 ```bash
 make test
 ```
 
-A saída mostrará os resultados de todos os testes para cada estrutura de dados, garantindo que as operações básicas e os casos extremos estão funcionando como esperado.
+A saída mostrará os resultados de todos os casos de teste para cada estrutura de dados, garantindo que as operações básicas e os casos de borda estão funcionando como esperado.
 
 -----
 
 ## Documentação da API
 
-A documentação completa de todas as classes, métodos e da arquitetura do projeto foi gerada automaticamente com o **Doxygen**. Para consultá-la:
+A documentação completa de todas as classes, métodos e da arquitetura do projeto foi gerada com o **Doxygen**. Para consultá-la:
 
-1.  **Gere a documentação (se ainda não o fez):**
+1.  **Gere a documentação (requer Doxygen instalado):**
 
     ```bash
     make docs
@@ -203,7 +289,7 @@ A documentação é a melhor fonte de referência para entender os detalhes de i
   - [x] **Parte 1:** Desenvolvimento de testes unitários com GoogleTest para validar as estruturas.
   - [x] **Parte 1:** Criação da documentação da API com Doxygen.
   - [x] **Parte 2:** Implementação da aplicação de contador de frequência (leitura de arquivos, processamento de texto).
-  - [ ] **Parte 2:** Coleta de dados e análise comparativa de performance entre as estruturas.
+  - [x] **Parte 2:** Coleta de dados e análise comparativa de performance entre as estruturas.
   - [ ] **Parte 2:** Finalização do relatório e apresentação do projeto.
 
 -----
@@ -224,12 +310,12 @@ Como alternativa, consulte a documentação do GitHub em [como criar uma solicit
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
 -----
 
 ## Créditos
 
-  * **Professor:** [Átilio Gomes Luiz](https://www.google.com/search?q=https://github.com/atiliogomes) – Universidade Federal do Ceará.
-  * **Material de Apoio:** Slides e materiais da disciplina de Estruturas de Dados Avançadas.
-  * **Ferramentas:** [GoogleTest](https://github.com/google/googletest) para os testes unitários.
+  - **Professor:** Prof. Atílio Gomes Luiz – Universidade Federal do Ceará.
+  - **Material de Apoio:** Slides e materiais da disciplina de Estruturas de Dados Avançadas.
+  - **Ferramentas:** [GoogleTest](https://github.com/google/googletest) para os testes unitários e [Doxygen](https://www.doxygen.nl/) para a documentação.

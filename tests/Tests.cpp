@@ -11,7 +11,7 @@
 #include <numeric>
 #include <random>
 
-// Test fixture genérico para a interface Dictionary
+/** @brief Fixture genérico para a interface Dictionary */
 template <typename T>
 class DictionaryTest : public ::testing::Test
 {
@@ -30,17 +30,17 @@ protected:
     }
 };
 
-// Declaração da suíte de testes tipados
+/** @brief Declaração da suíte de testes tipados */
 TYPED_TEST_SUITE_P(DictionaryTest);
 
-// Testa o estado inicial de um dicionário recém-criado
+/** @brief Testa o estado inicial de um dicionário recém-criado */
 TYPED_TEST_P(DictionaryTest, DefaultConstructor)
 {
     EXPECT_TRUE(this->dict->empty());
     EXPECT_EQ(this->dict->size(), static_cast<size_t>(0));
 }
 
-// Testa a inserção de um único elemento e o tamanho
+/** @brief Testa a inserção de um único elemento e o tamanho */
 TYPED_TEST_P(DictionaryTest, InsertAndSize)
 {
     this->dict->insert({1, "one"});
@@ -48,7 +48,7 @@ TYPED_TEST_P(DictionaryTest, InsertAndSize)
     EXPECT_EQ(this->dict->size(), static_cast<size_t>(1));
 }
 
-// Testa se a inserção de chaves duplicadas é ignorada
+/** @brief Testa se a inserção de chaves duplicadas é ignorada */
 TYPED_TEST_P(DictionaryTest, InsertDuplicates)
 {
     this->dict->insert({1, "one"});
@@ -57,7 +57,7 @@ TYPED_TEST_P(DictionaryTest, InsertDuplicates)
     EXPECT_EQ(this->dict->at(1), "one"); // O valor original deve ser mantido
 }
 
-// Testa a funcionalidade de 'contains'
+/** @brief Testa a funcionalidade de 'contains' */
 TYPED_TEST_P(DictionaryTest, Contains)
 {
     this->dict->insert({10, "ten"});
@@ -67,7 +67,7 @@ TYPED_TEST_P(DictionaryTest, Contains)
     EXPECT_FALSE(this->dict->contains(30));
 }
 
-// Testa a remoção de elementos
+/** @brief Testa a remoção de elementos */
 TYPED_TEST_P(DictionaryTest, Remove)
 {
     this->dict->insert({1, "one"});
@@ -85,7 +85,7 @@ TYPED_TEST_P(DictionaryTest, Remove)
     EXPECT_EQ(this->dict->size(), static_cast<size_t>(2));
 }
 
-// Testa a remoção de um nó com dois filhos (importante para árvores)
+/** @brief Testa a remoção de um nó com dois filhos (importante para árvores) */
 TYPED_TEST_P(DictionaryTest, RemoveNodeWithTwoChildren)
 {
     // A ordem de inserção pode influenciar a estrutura da árvore
@@ -105,7 +105,7 @@ TYPED_TEST_P(DictionaryTest, RemoveNodeWithTwoChildren)
     EXPECT_TRUE(this->dict->contains(15));
 }
 
-// Testa a função 'at' para acesso e exceções
+/** @brief Testa a função 'at' para acesso e exceções */
 TYPED_TEST_P(DictionaryTest, At)
 {
     this->dict->insert({1, "one"});
@@ -117,7 +117,7 @@ TYPED_TEST_P(DictionaryTest, At)
     EXPECT_EQ(this->dict->at(1), "uno");
 }
 
-// Testa a função 'update'
+/** @brief Testa a função 'update' */
 TYPED_TEST_P(DictionaryTest, Update)
 {
     this->dict->insert({1, "one"});
@@ -128,7 +128,7 @@ TYPED_TEST_P(DictionaryTest, Update)
     EXPECT_THROW(this->dict->update({2, "dos"}), std::out_of_range);
 }
 
-// Testa o operador de colchetes []
+/** @brief Testa o operador de colchetes [] */
 TYPED_TEST_P(DictionaryTest, BracketOperator)
 {
     (*this->dict)[1] = "one"; // Inserir
@@ -144,7 +144,7 @@ TYPED_TEST_P(DictionaryTest, BracketOperator)
     EXPECT_EQ((*this->dict)[2], "two");
 }
 
-// Testa a limpeza do dicionário
+/** @brief Testa a limpeza do dicionário */
 TYPED_TEST_P(DictionaryTest, Clear)
 {
     this->dict->insert({1, "one"});
@@ -155,7 +155,7 @@ TYPED_TEST_P(DictionaryTest, Clear)
     EXPECT_FALSE(this->dict->contains(1));
 }
 
-// Testa a clonagem do dicionário
+/** @brief Testa a clonagem do dicionário */
 TYPED_TEST_P(DictionaryTest, Clone)
 {
     this->dict->insert({1, "one"});
@@ -181,7 +181,7 @@ TYPED_TEST_P(DictionaryTest, Clone)
     EXPECT_EQ(clone->size(), static_cast<size_t>(2));
 }
 
-// Testa a iteração com forEach
+/** @brief Testa a iteração com forEach */
 TYPED_TEST_P(DictionaryTest, ForEach)
 {
     this->dict->insert({3, "three"});
@@ -201,7 +201,7 @@ TYPED_TEST_P(DictionaryTest, ForEach)
     EXPECT_EQ(keys[2], 3);
 }
 
-// Registra todos os testes definidos acima para a suíte
+/** @brief Registra todos os testes definidos acima para a suíte */
 REGISTER_TYPED_TEST_SUITE_P(DictionaryTest,
                             DefaultConstructor,
                             InsertAndSize,
@@ -226,7 +226,7 @@ protected:
     AVLTree<int, std::string> avl;
 };
 
-// Força uma rotação simples à direita (Left-Left case)
+/** @brief Força uma rotação simples à direita (Left-Left case) */
 TEST_F(AVLTreeSpecificTest, InsertTriggersSingleRightRotation)
 {
     avl.insert({30, "thirty"});
@@ -243,7 +243,7 @@ TEST_F(AVLTreeSpecificTest, InsertTriggersSingleRightRotation)
     // Um teste mais profundo (caixa-branca) poderia verificar quem é a raiz.
 }
 
-// Força uma rotação simples à esquerda (Right-Right case)
+/** @brief Força uma rotação simples à esquerda (Right-Right case) */
 TEST_F(AVLTreeSpecificTest, InsertTriggersSingleLeftRotation)
 {
     avl.insert({10, "ten"});
@@ -256,7 +256,7 @@ TEST_F(AVLTreeSpecificTest, InsertTriggersSingleLeftRotation)
     EXPECT_TRUE(avl.contains(30));
 }
 
-// Força uma rotação dupla direita-esquerda (Right-Left case)
+/** @brief Força uma rotação dupla direita-esquerda (Right-Left case) */
 TEST_F(AVLTreeSpecificTest, InsertTriggersRightLeftRotation)
 {
     avl.insert({10, "ten"});
@@ -269,7 +269,7 @@ TEST_F(AVLTreeSpecificTest, InsertTriggersRightLeftRotation)
     EXPECT_TRUE(avl.contains(30));
 }
 
-// Força uma rotação dupla esquerda-direita (Left-Right case)
+/** @brief Força uma rotação dupla esquerda-direita (Left-Right case) */
 TEST_F(AVLTreeSpecificTest, InsertTriggersLeftRightRotation)
 {
     avl.insert({30, "thirty"});
@@ -282,7 +282,7 @@ TEST_F(AVLTreeSpecificTest, InsertTriggersLeftRightRotation)
     EXPECT_TRUE(avl.contains(30));
 }
 
-// Testa a remoção que deve acionar rotações para rebalancear
+/** @brief Testa a remoção que deve acionar rotações para rebalancear */
 TEST_F(AVLTreeSpecificTest, RemovalTriggersRebalancing)
 {
     // Cria uma árvore maior e mais complexa
@@ -314,8 +314,8 @@ TEST_F(AVLTreeSpecificTest, RemovalTriggersRebalancing)
 // Foco: Forçar colisões e redimensionamento (rehashing).
 //==================================================================================
 
-// Usamos novamente um teste tipado para aplicar os mesmos testes
-// de estresse para ChainedHashTable e OpenHashTable.
+/** @brief Usamos novamente um teste tipado para aplicar os mesmos testes
+ * de estresse para ChainedHashTable e OpenHashTable. */
 template <typename T>
 class HashTableStressTest : public ::testing::Test
 {
@@ -330,10 +330,11 @@ protected:
 
 TYPED_TEST_SUITE_P(HashTableStressTest);
 
-// Testa o comportamento sob alta taxa de colisão
-// Para isso, precisamos de uma função de hash que possamos controlar.
-// Como não podemos, vamos simular inserindo múltiplos de um valor inicial
-// que, dependendo do tamanho da tabela, provavelmente colidirão.
+/** @brief Testa o comportamento sob alta taxa de colisão
+ * Para isso, precisamos de uma função de hash que possamos controlar.
+ * Como não podemos, vamos simular inserindo múltiplos de um valor inicial
+ * que, dependendo do tamanho da tabela, provavelmente colidirão.
+ */
 TYPED_TEST_P(HashTableStressTest, HighCollisionRate)
 {
     // Supondo um tamanho inicial pequeno (e.g., 10),
@@ -363,7 +364,7 @@ TYPED_TEST_P(HashTableStressTest, HighCollisionRate)
     EXPECT_EQ(this->hashTable->size(), static_cast<size_t>(num_elements - 2));
 }
 
-// Testa a funcionalidade de redimensionamento (rehashing)
+/** @brief Testa a funcionalidade de redimensionamento (rehashing) */
 TYPED_TEST_P(HashTableStressTest, RehashingOnHighLoadFactor)
 {
     // Insere um número grande de elementos para forçar o rehash.
@@ -497,8 +498,8 @@ using Implementations = ::testing::Types<
     ChainedHashTable<int, std::string>,
     OpenHashTable<int, std::string>>;
 
-// Instancia a suíte de testes para cada uma das implementações
+/** @brief Instancia a suíte de testes para cada uma das implementações */
 INSTANTIATE_TYPED_TEST_SUITE_P(MyImplementations, DictionaryTest, Implementations);
 
-// Instancia a suíte de testes de estresse para as implementações de dicionário
+/** @brief Instancia a suíte de testes de estresse para as implementações de dicionário */
 INSTANTIATE_TYPED_TEST_SUITE_P(MyGeneralStress, GeneralStressTest, Implementations);

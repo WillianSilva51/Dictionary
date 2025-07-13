@@ -17,9 +17,9 @@ template <typename Key, typename Value>
 class DynamicDictionary : public Dictionary<Key, Value>
 {
 private:
-    DictionaryType type;                                         // O tipo de dicionário a ser utilizado
     std::unique_ptr<Dictionary<Key, Value>> dictionary{nullptr}; // Ponteiro inteligente para a implementação do dicionário subjacente
-
+    DictionaryType type;                                         // O tipo de dicionário a ser utilizado
+    
     /**
      * @brief Verifica se o dicionário foi criado corretamente.
      * @throws std::runtime_error se o dicionário não foi criado corretamente.
