@@ -3,7 +3,7 @@
 #===============================================================================
 
 # Compilador C++
-CXX = g++
+CXX ?= g++
 
 # Opções de compilação para debug e release
 CXXFLAGS_DEBUG = -std=c++20 -Wall -Wextra -g -O0 -MMD -MP -Iinclude
@@ -138,13 +138,6 @@ run: all
 # Regra para gerar documentação
 docs:
 	@$(Cleanup)
-	@echo "Deletando documentacao antiga..."
-ifeq ($(OS),Windows_NT)
-	@if exist "docs" ($(RM) "docs") || if exist "docs" then ($(RM) "docs")
-else
-	@if [ -d "docs" ]; then $(RM) -r docs; fi
-endif
-	@echo "Documentacao antiga deletada com sucesso!"
 	@echo "Gerando documentacao..."
 	@doxygen Doxyfile
 	@echo "Documentacao gerada com sucesso!"

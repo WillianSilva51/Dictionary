@@ -9,7 +9,7 @@ TextProcessor::TextProcessor(const std::string &input_file) : file_stream(input_
 void TextProcessor::toLowerCase(std::string &text)
 {
     std::transform(text.begin(), text.end(), text.begin(), [](unsigned char c)
-                   { return std::tolower(c); });
+                   { return std::tolower(c, std::locale("pt_BR.UTF-8")); });
 }
 
 void TextProcessor::processFile(const std::function<void(const std::string &)> &wordHandler)

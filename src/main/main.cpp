@@ -3,6 +3,7 @@
 #include <thread>
 #include <mutex>
 #include <filesystem>
+#include <locale>
 
 #include "dictionary/DynamicDictionary.hpp"
 #include "text_processor/TextProcessor.hpp"
@@ -136,6 +137,8 @@ void write_output(const std::string &filename, const Dictionary<std::string, uns
 
     if (!output_file or !output_file.is_open())
         throw std::runtime_error("Failed to open output file " + filename);
+
+    output_file.imbue(std::locale("Pt_BR.UTF-8")); // Define a localidade para o arquivo de saída
 
     if (output_file.tellp() == 0) // Verifica se o arquivo está vazio
     {
