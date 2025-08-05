@@ -292,7 +292,7 @@ A documentação é a melhor fonte de referência para entender os detalhes de i
   - [x] **Parte 1:** Criação da documentação da API com Doxygen.
   - [x] **Parte 2:** Implementação da aplicação de contador de frequência (leitura de arquivos, processamento de texto).
   - [x] **Parte 2:** Coleta de dados e análise comparativa de performance entre as estruturas.
-  - [ ] **Parte 2:** Finalização do relatório e apresentação do projeto.
+  - [x] **Parte 2:** Finalização do relatório e apresentação do projeto.
 
 -----
 
