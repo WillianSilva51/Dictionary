@@ -19,6 +19,7 @@
   - [Pré-requisitos](#pré-requisitos)
   - [Instalação e Compilação](#instalação-e-compilação)
   - [Executando o Programa](#executando-o-programa)
+  - [Usando com Docker](#usando-com-docker)
   - [Executando os Testes](#executando-os-testes)
   - [Documentação da API](#documentação-da-api)
   - [Roadmap do Projeto](#roadmap-do-projeto)
@@ -252,6 +253,46 @@ Para ver a mensagem de ajuda, execute:
 ```bash
 ./build/bin/Dictionary help
 ```
+
+## Usando com Docker
+
+Você também pode executar a aplicação usando o Docker, o que simplifica a configuração do ambiente. A imagem oficial está disponível no Docker Hub.
+
+### Executando a partir do Docker Hub
+
+Esta é a maneira mais fácil de começar.
+
+1.  **Puxe a imagem do Docker Hub:**
+
+    ```bash
+    docker pull williansilva51/dictionary
+    ```
+
+2.  **Execute o contêiner:**
+    Por padrão, o comando `./freq.sh all domcasmurro.txt` será executado.
+
+    ```bash
+    docker run williansilva51/dictionary
+    ```
+
+    Você pode passar outros argumentos, como faria normalmente na linha de comando, para usar outras estruturas e arquivos:
+
+    ```bash
+    docker run williansilva51/dictionary <estrutura> <arquivo.txt>
+    ```
+
+### Construindo a Imagem Localmente (Opcional)
+
+Se preferir construir a imagem a partir do código-fonte:
+
+1.  **Construa a imagem do Docker:**
+    ```bash
+    docker build -t dictionary .
+    ```
+2.  **Execute o contêiner:**
+    ```bash
+    docker run dictionary
+    ```
 
 -----
 

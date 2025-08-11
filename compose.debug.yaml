@@ -1,6 +1,0 @@
-services:
-  dictionary:
-    image: dictionary
-    build:
-      context: .
-      dockerfile: ./Dockerfile

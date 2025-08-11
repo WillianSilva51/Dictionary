@@ -228,6 +228,25 @@ void counter_words(const std::string &filename, Dictionary<std::string, unsigned
 }
 
 /**
+ * @brief Imprime o conteúdo de um dicionário.
+ *
+ * Esta função recebe um dicionário de palavras e suas contagens e imprime
+ * cada par chave-valor no formato [palavra, contagem].
+ *
+ * @param counter O dicionário a ser impresso.
+ */
+void printDictionary(const std::unique_ptr<Dictionary<std::string, unsigned int>> &counter, const std::string &filename)
+{
+    cout << "=========================================================================" << endl;
+    cout << "Word Count for file: " << filename << endl;
+    cout << "=========================================================================" << endl;
+    cout << endl;
+
+    counter->forEach([](const std::pair<std::string, unsigned int> &pair)
+                     { cout << "[" << pair.first << ", " << pair.second << "]" << endl; });
+}
+
+/**
  * @brief Função principal do programa.
  *
  * Esta função serve como ponto de entrada para a aplicação de contagem de palavras.
@@ -313,12 +332,16 @@ int main(int argc, char *argv[])
 
             for (size_t i = 0; i < 4; ++i)
                 threads[i].join();
+
+            printDictionary(counters[1], input_file);
         }
         else
         {
             DictionaryType type = get_structure_type(structure_type);
             unique_ptr<Dictionary<string, unsigned int>> counter(create_dictionary<string, unsigned int>(type));
             counter_words(input_file, *counter, get_structure_name(type));
+
+            printDictionary(counter, input_file);
         }
     }
     catch (const std::exception &e)
