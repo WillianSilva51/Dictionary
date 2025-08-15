@@ -297,7 +297,7 @@ docker run --rm \
   williansilva51/dictionary all domcasmurro.txt
 ```
 
-> Esse comando executa a estrutura `all` sobre o arquivo `domcasmurro.txt`, e o resultado será salvo em `./out/result.txt`.
+> Esse comando executa a estrutura `all` sobre o arquivo `domcasmurro.txt`, e o resultado será salvo em um arquivo dentro da pasta `./out/`. O nome do arquivo de saída pode variar conforme o nome do arquivo de entrada.
 
 ### Construindo a Imagem Localmente (Opcional)
 
