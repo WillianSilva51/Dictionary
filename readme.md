@@ -256,11 +256,11 @@ Para ver a mensagem de ajuda, execute:
 
 ## Usando com Docker
 
-Você também pode executar a aplicação usando o Docker, o que simplifica a configuração do ambiente. A imagem oficial está disponível no Docker Hub.
+Você também pode executar a aplicação usando o Docker, o que simplifica a configuração do ambiente. A imagem oficial está disponível no Docker Hub. Caso não tenha o Docker instalado, siga as instruções em [Get Docker](https://docs.docker.com/get-docker).
 
 ### Executando a partir do Docker Hub
 
-Esta é a maneira mais fácil de começar.
+Esta é a maneira mais fácil de começar. 
 
 1.  **Puxe a imagem do Docker Hub:**
 
@@ -280,6 +280,24 @@ Esta é a maneira mais fácil de começar.
     ```bash
     docker run williansilva51/dictionary <estrutura> <arquivo.txt>
     ```
+
+### Usando arquivos de entrada e saída com volumes
+
+Você pode usar arquivos `.txt` do seu computador e salvar a saída em uma pasta local, sem precisar alterar a imagem. Basta montar dois volumes:
+
+* **Entrada**: pasta contendo os arquivos `.txt` que você quer analisar
+* **Saída**: pasta onde os resultados serão gravados
+
+#### ▶️ Comando para rodar com esses arquivos:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/entrada:/app/files" \
+  -v "$(pwd)/out:/app/out" \
+  williansilva51/dictionary all domcasmurro.txt
+```
+
+> Esse comando executa a estrutura `all` sobre o arquivo `domcasmurro.txt`, e o resultado será salvo em `./out/result.txt`.
 
 ### Construindo a Imagem Localmente (Opcional)
 
