@@ -1,0 +1,11 @@
+services:
+  dictionary:
+    container_name: dictionary
+    image: docker.io/williansilva51/dictionary
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ${PWD}/files:/app/files:ro,Z
+      - ${PWD}/out:/app/out:Z
+    working_dir: /app

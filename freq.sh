@@ -22,4 +22,4 @@ if [ ! -f "$EXECUTABLE" ]; then
     make MODE=release
 fi
 
-"$EXECUTABLE" "$STRUCTURE" "$FILE"
+exec "$EXECUTABLE" "$STRUCTURE" "$FILE"

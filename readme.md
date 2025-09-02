@@ -312,6 +312,16 @@ Se preferir construir a imagem a partir do código-fonte:
     docker run dictionary
     ```
 
+### Executando a partir do Docker Compose
+
+Você também pode usar o Docker Compose para simplificar a execução da aplicação. Use o arquivo `docker-compose.yml` que está na raiz do projeto.
+
+Para iniciar a aplicação, execute:
+
+```bash
+docker compose up
+```
+
 -----
 
 ## Executando os Testes
